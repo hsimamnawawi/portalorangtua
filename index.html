@@ -1,4 +1,12 @@
-<!-- ... existing code ... -->
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Orang Tua | HSIN</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Google Fonts: Plus Jakarta Sans -->
@@ -7,10 +15,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Awesomplete CSS (Untuk Auto-suggest) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css" />
+    
     <script>
         tailwind.config = {
             theme: {
-<!-- ... existing code ... -->
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
                         brand: {
                             dark: '#1e293b',
                             darker: '#0f172a',
@@ -20,7 +31,9 @@
                     }
                 }
             }
-<!-- ... existing code ... -->
+        }
+    </script>
+    <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
         .fade-in { animation: fadeIn 0.3s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -88,7 +101,8 @@
     </div>
 
     <!-- MAIN APP CONTAINER (Dasbor Utama) -->
-<!-- ... existing code ... -->
+    <div id="app-container" class="hidden min-h-screen bg-slate-50 flex-col md:flex-row relative">
+        
         <!-- Loading Overlay -->
         <div id="loading-view" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm hidden">
             <div id="spinner-loader" class="w-12 h-12 border-4 border-slate-200 rounded-full animate-spin mb-4 shadow-sm"></div>
@@ -118,7 +132,12 @@
             </nav>
             
             <div class="p-4 border-t border-white/10 bg-black/20">
-<!-- ... existing code ... -->
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-red-400 font-bold rounded-xl text-sm hover:bg-red-500/10 hover:text-red-300 transition-all border border-red-500/20">
+                    <i class="fas fa-sign-out-alt"></i> Keluar Sesi
+                </button>
+            </div>
+        </aside>
+
         <!-- Main Content Area -->
         <main class="flex-1 p-4 md:p-8 md:ml-64 w-full max-w-[1400px] mx-auto overflow-x-hidden">
             <!-- Header Info Siswa (Kini Dominan Abu dengan Aksen Dinamis) -->
@@ -143,7 +162,8 @@
             </div>
 
             <!-- TAB 1: JADWAL & MAPEL -->
-<!-- ... existing code ... -->
+            <div id="tab-jadwal" class="tab-content block fade-in">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6">
                     <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50">
                         <h2 class="font-bold text-lg text-slate-800"><i class="fas fa-calendar-week mr-2 text-slate-400"></i> Jadwal Pelajaran Pekanan</h2>
                     </div>
@@ -152,13 +172,42 @@
                             <thead id="table-jadwal-head" class="text-white transition-colors duration-500">
                                 <tr>
                                     <th class="p-4 font-bold text-left pl-6">Jam</th>
-<!-- ... existing code ... -->
+                                    <th class="p-4 font-bold text-left">Senin</th>
+                                    <th class="p-4 font-bold text-left">Selasa</th>
+                                    <th class="p-4 font-bold text-left">Rabu</th>
+                                    <th class="p-4 font-bold text-left">Kamis</th>
+                                    <th class="p-4 font-bold text-left">Jumat</th>
+                                    <th class="p-4 font-bold text-left">Sabtu</th>
+                                </tr>
+                            </thead>
+                            <tbody id="jadwal-body" class="divide-y divide-slate-100">
+                                <!-- Data jadwal dimuat di sini -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: PRESENSI -->
             <div id="tab-presensi" class="tab-content hidden space-y-6 fade-in">
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <h2 class="font-bold text-lg text-slate-800"><i class="fas fa-user-check mr-2 text-slate-400"></i> Rekap Kehadiran Siswa/i</h2>
                         <div class="flex items-center gap-3 bg-white px-3 py-1.5 rounded-lg border border-slate-100 text-xs font-bold text-slate-500 shadow-sm">
-<!-- ... existing code ... -->
+                            <span class="flex items-center gap-1.5"><i class="fas fa-check-circle text-emerald-500"></i> Hadir</span>
+                            <span class="flex items-center gap-1.5"><i class="fas fa-times-circle text-red-500"></i> Absen</span>
+                            <span class="flex items-center gap-1.5"><i class="fas fa-info-circle text-blue-500"></i> S/I</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div id="presensi-container" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                            <!-- Kartu Presensi Mapel -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: PENGATURAN -->
             <div id="tab-pengaturan" class="tab-content hidden fade-in">
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden max-w-lg">
                     <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50">
@@ -168,7 +217,8 @@
                         <form onsubmit="handleUbahPassword(event)" class="space-y-4">
                             <div>
                                 <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Password Baru</label>
-<!-- ... existing code ... -->
+                                <input type="password" id="pwd-baru" required placeholder="Masukkan password baru..." class="w-full border border-slate-200 bg-slate-50 p-3.5 rounded-xl text-sm font-medium focus:bg-white focus:ring-2 focus:border-slate-300 outline-none shadow-sm transition-all mb-4">
+                                
                                 <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Konfirmasi Password</label>
                                 <input type="password" id="pwd-konfirmasi" required placeholder="Ulangi password baru..." class="w-full border border-slate-200 bg-slate-50 p-3.5 rounded-xl text-sm font-medium focus:bg-white focus:ring-2 focus:border-slate-300 outline-none shadow-sm transition-all">
                             </div>
@@ -176,10 +226,17 @@
                                 <i class="fas fa-save"></i> Simpan Perubahan
                             </button>
                         </form>
-<!-- ... existing code ... -->
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Notifikasi Toast -->
     <div id="toast-error" class="fixed bottom-6 right-6 bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl transition-all duration-300 toast-exit flex items-center gap-4 z-50 text-sm font-medium border border-slate-700">
         <i class="fas fa-info-circle text-lg"></i>
-<!-- ... existing code ... -->
+        <span id="toast-msg"></span>
     </div>
 
     <!-- Script Awesomplete -->
@@ -187,7 +244,10 @@
 
     <script>
         // Konfigurasi Supabase Anda (Gunakan Anon Key)
-<!-- ... existing code ... -->
+        const SUPABASE_URL = 'https://nqexcwcissrnxtxalkxn.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xZXhjd2Npc3Nybnh0eGFsa3huIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1Mjc3NDYsImV4cCI6MjEwMjEwMzc0Nn0.kYan3Wj3Ll8S6jFQoXbBJMEZn9cSTKNMYM1EuIly3NI';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         let currentSession = null;
         let themeColor = "#1e293b"; // Default Netral
         let allStudentsList = []; // Array untuk menyimpan semua nama siswa
@@ -226,12 +286,15 @@
         }
 
         function showToast(msg) {
-<!-- ... existing code ... -->
             const toast = document.getElementById('toast-error');
             document.getElementById('toast-msg').innerText = msg;
             toast.classList.remove('toast-exit');
             toast.classList.add('toast-enter');
-<!-- ... existing code ... -->
+            
+            setTimeout(() => {
+                toast.classList.remove('toast-enter');
+                toast.classList.add('toast-exit');
+            }, 4000);
         }
 
         function toggleLoginLoading(isLoading) {
@@ -360,11 +423,29 @@
         }
 
         async function loadPortalData() {
-<!-- ... existing code ... -->
+            toggleLoadingView(true);
+            try {
+                renderHeaderInfo();
+                await Promise.all([
+                    loadJadwalData(),
+                    loadPresensiData()
+                ]);
+                switchTab('jadwal');
+            } catch (error) {
+                console.error(error);
+                showToast("Gagal memuat beberapa data dari server.");
+            } finally {
+                toggleLoadingView(false);
+            }
+        }
+
+        function toggleLoadingView(show) {
+            const loader = document.getElementById('loading-view');
+            if (show) loader.classList.remove('hidden');
+            else loader.classList.add('hidden');
         }
 
         function renderHeaderInfo() {
-<!-- ... existing code ... -->
             document.getElementById('user-nama').innerText = currentSession.nama_lengkap;
             document.getElementById('user-jenjang-badge').innerText = currentSession.jenjang || "Reguler";
             document.getElementById('user-kelas').innerText = "Kelas " + (currentSession.kelas || "-");
@@ -387,7 +468,151 @@
                 .from('jadwal_flat')
                 .select('*')
                 .order('jam_mulai', { ascending: true });
-<!-- ... existing code ... -->
+                
+            if (error) throw error;
+            
+            const tbody = document.getElementById('jadwal-body');
+            tbody.innerHTML = '';
+            
+            if (!data || data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-slate-500">Jadwal belum tersedia di sistem.</td></tr>`;
+                return;
+            }
+
+            // Gabungkan berdasarkan Jam Mulai
+            const jadwalMap = new Map();
+            data.forEach(row => {
+                const jam = `${row.jam_mulai} - ${row.jam_selesai || '?'}`;
+                if (!jadwalMap.has(jam)) {
+                    jadwalMap.set(jam, { jam: jam, senin: '-', selasa: '-', rabu: '-', kamis: '-', jumat: '-', sabtu: '-' });
+                }
+                const entry = jadwalMap.get(jam);
+                const hari = row.hari ? row.hari.toLowerCase() : '';
+                if (entry.hasOwnProperty(hari)) {
+                    entry[hari] = row.nama_mapel;
+                }
+            });
+
+            jadwalMap.forEach(item => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="p-4 pl-6 font-bold text-slate-700 whitespace-nowrap">${item.jam}</td>
+                        <td class="p-4 text-slate-600">${item.senin}</td>
+                        <td class="p-4 text-slate-600">${item.selasa}</td>
+                        <td class="p-4 text-slate-600">${item.rabu}</td>
+                        <td class="p-4 text-slate-600">${item.kamis}</td>
+                        <td class="p-4 text-slate-600">${item.jumat}</td>
+                        <td class="p-4 text-slate-600">${item.sabtu}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function loadPresensiData() {
+            const { data, error } = await supabaseClient
+                .from('presensi_flat')
+                .select('*')
+                .eq('nama_siswa', currentSession.nama_lengkap);
+                
+            if (error) throw error;
+            
+            const container = document.getElementById('presensi-container');
+            container.innerHTML = '';
+            
+            if (!data || data.length === 0) {
+                container.innerHTML = `<div class="col-span-full p-8 text-center text-slate-500 bg-slate-50 rounded-xl border border-slate-200">Data presensi belum direkap.</div>`;
+                return;
+            }
+
+            // Kelompokkan berdasarkan Mapel
+            const mapelMap = {};
+            data.forEach(row => {
+                if (!mapelMap[row.mapel]) mapelMap[row.mapel] = [];
+                mapelMap[row.mapel].push(row);
+            });
+
+            for (const [mapel, list] of Object.entries(mapelMap)) {
+                // Urutkan berdasarkan Pekan
+                list.sort((a, b) => {
+                    const pA = parseInt(a.pekan.replace(/\D/g, '')) || 0;
+                    const pB = parseInt(b.pekan.replace(/\D/g, '')) || 0;
+                    return pA - pB;
+                });
+
+                let pillHTML = '';
+                list.forEach(item => {
+                    let st = item.status_hadir ? item.status_hadir.toLowerCase().trim() : '';
+                    let bgColor = 'bg-slate-100 text-slate-500';
+                    if (st === 'v' || st === '√' || st === 'hadir') bgColor = 'bg-emerald-100 text-emerald-700 border-emerald-200';
+                    else if (st === 'a' || st === 'absen' || st === 'alfa') bgColor = 'bg-red-100 text-red-700 border-red-200';
+                    else if (st === 's' || st === 'i' || st === 'sakit' || st === 'izin') bgColor = 'bg-blue-100 text-blue-700 border-blue-200';
+
+                    let pLabel = item.pekan.replace('Pekan', 'P').trim();
+                    pillHTML += `<div class="px-2.5 py-1 rounded border text-xs font-bold ${bgColor} shadow-sm" title="Sesi ${item.sesi}: ${item.status_hadir}">${pLabel}</div>`;
+                });
+
+                container.innerHTML += `
+                    <div class="border border-slate-200 rounded-xl p-4 bg-white hover:shadow-md transition-shadow">
+                        <div class="font-bold text-slate-800 mb-3 pb-2 border-b border-slate-100 flex items-center justify-between">
+                            <span>${mapel}</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            ${pillHTML}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        async function handleUbahPassword(e) {
+            e.preventDefault();
+            const pBaru = document.getElementById('pwd-baru').value;
+            const pKonf = document.getElementById('pwd-konfirmasi').value;
+
+            if (pBaru !== pKonf) {
+                showToast("Password konfirmasi tidak cocok!");
+                return;
+            }
+
+            const btn = document.getElementById('btn-save-pwd');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Menyimpan...`;
+            btn.disabled = true;
+
+            try {
+                // Update ke Supabase
+                const { error } = await supabaseClient
+                    .from('master_data_siswa')
+                    .update({ password_awal: pBaru })
+                    .eq('id_siswa', currentSession.id_siswa);
+
+                if (error) throw error;
+
+                showToast("Password berhasil diperbarui!");
+                document.getElementById('pwd-baru').value = '';
+                document.getElementById('pwd-konfirmasi').value = '';
+                currentSession.password_awal = pBaru;
+                
+            } catch (error) {
+                console.error(error);
+                showToast("Gagal mengubah password.");
+            } finally {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-white/10', 'text-white', 'shadow-inner');
+                el.classList.add('text-slate-300');
+            });
+            const activeBtn = document.getElementById('nav-' + tabId);
+            activeBtn.classList.add('bg-white/10', 'text-white', 'shadow-inner');
+            activeBtn.classList.remove('text-slate-300');
         }
 
         function logout() {
