@@ -740,7 +740,12 @@
                 let mapelResmiClean = mResmi.replace(/[^a-z0-9]/g, '');
                 let mDicekClean = mDicekLower.replace(/[^a-z0-9]/g, '');
                 
+                // MENCEGAH "Fiqih 1-2" MASUK KE "Fiqih 1-2.A"
+                // Hanya lolos jika string hasil sanitize sama persis (Exact Match)
                 if (mDicekClean === mapelResmiClean) return true;
+                
+                // Jika ingin longgar (misal B.Indo 10.A vs Bahasa Indonesia 10.A), 
+                // batasi ke kata yang cukup panjang agar tak bentrok.
                 if (mDicekClean.length > 4 && mapelResmiClean.length > 4) {
                     if (mDicekClean.includes(mapelResmiClean) || mapelResmiClean.includes(mDicekClean)) return true;
                 }
@@ -750,6 +755,7 @@
             let matchKelasDb = mDicekLower.match(/\d{1,2}\.[a-z]/i); 
             if (matchKelasDb) {
                 let kelasDb = matchKelasDb[0]; 
+                // Jika mengandung info kelas, tapi kelasnya beda dengan anak ini -> TENDANG
                 if (kelasLower && !kelasLower.includes(kelasDb) && !kelasDb.includes(kelasLower)) {
                     return false; 
                 }
@@ -758,7 +764,7 @@
             // 3. FALLBACK TERAKHIR: Jika nama mapel setidaknya mengandung nama kelas anak
             if (kelasLower && mDicekLower.includes(kelasLower)) return true;
 
-            // 4. FALLBACK MAPEL GENERIK: Amankan nama dasar jika tertulis generik di DB
+            // 4. FALLBACK MAPEL GENERIK: Amankan nama dasar jika tertulis generik di DB (misal dari Presensi)
             if (mDicekLower.includes('pai') || mDicekLower.includes('arab') || mDicekLower.includes('literasi islam')) {
                 return true; 
             }
@@ -1231,8 +1237,8 @@
             let mapelValid = [];
             let seenNames = new Set();
             
-            // Gabungan array mapel resmi dan mapel yang ditemukan (jadwal/presensi)
-            let sumberMapel = [...Array.from(officialSubjects), ...Array.from(foundSubjects)];
+            // HANYA MENGGUNAKAN officialSubjects
+            let sumberMapel = Array.from(officialSubjects);
             
             sumberMapel.forEach(m => {
                 if (!m || m === "EMPTY" || m === "-" || m.toLowerCase() === "umum") return;
