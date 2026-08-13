@@ -8,7 +8,7 @@
     <!-- FontAwesome Icons -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Google Fonts: Nunito & Inter -->
+    <!-- Google Fonts: Nunito & Inter (Style ala Zenius) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Supabase JS Client CDN -->
@@ -17,7 +17,7 @@
     <!-- Awesomplete CSS (Untuk Auto-suggest) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css" />
     
-    <!-- html2pdf JS (Untuk fitur Cetak PDF) -->
+    <!-- html2pdf JS (Untuk Fitur Cetak PDF) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -26,7 +26,7 @@
             theme: {
                 extend: {
                     fontFamily: { 
-                        sans: ['Nunito', 'sans-serif'], // Font Utama (Headings, ala Zenius)
+                        sans: ['Nunito', 'sans-serif'], // Font Utama (Headings ala Zenius)
                         body: ['Inter', 'sans-serif']   // Font Body (Teks detail)
                     }
                 }
@@ -47,7 +47,7 @@
         .toast-enter { transform: translateY(0); opacity: 1; pointer-events: auto; }
         .toast-exit { transform: translateY(150%); opacity: 0; pointer-events: none; }
         
-        /* Custom Styling for Awesomplete */
+        /* Custom Styling untuk Awesomplete Auto-suggest */
         .awesomplete { width: 100%; display: block; }
         .awesomplete > ul { border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0; margin-top: 0.25rem; font-size: 0.95rem; font-weight: 700; z-index: 50; max-height: 250px; overflow-y: auto;}
         .awesomplete > ul > li { padding: 0.85rem 1.2rem; color: #475569; transition: all 0.2s; font-family: 'Inter', sans-serif; }
@@ -65,15 +65,15 @@
     <!-- HALAMAN LOGIN -->
     <div id="login-view" class="flex flex-col lg:flex-row min-h-screen w-full bg-slate-50 relative z-10">
         
-        <!-- PANEL KIRI (Branding dengan Layout Baru Ala Referensi - Tema Abu-abu Gelap) -->
+        <!-- PANEL KIRI (Branding dengan Layout Baru - Tema Abu-abu Gelap) -->
         <div class="lg:w-[55%] bg-slate-800 flex flex-col justify-between items-center p-8 lg:p-12 text-white text-center relative overflow-hidden min-h-[100vh] lg:min-h-0">
             <!-- Background Accent -->
             <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent mix-blend-overlay"></div>
             
-            <!-- Area Tengah (Logo, Judul, Grid) -->
+            <!-- Area Tengah (Logo, Judul Dua Baris, Grid Fitur) -->
             <div class="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-xl my-auto">
                 
-                <!-- Logo Ala Ikon App -->
+                <!-- Logo HSIN Ala Ikon App -->
                 <div class="bg-white p-3.5 rounded-[2rem] shadow-2xl mb-8 w-28 h-28 flex items-center justify-center transition-transform hover:scale-105 duration-300">
                     <img src="https://i.ibb.co.com/p6X7DYnr/Logo-HSIN.png" alt="Logo HSIN" class="w-full h-full object-contain">
                 </div>
@@ -124,23 +124,22 @@
                 
                 <form id="form-login" onsubmit="handleLogin(event)" class="space-y-5">
                     <div>
-                        <!-- Label polos, input polos, tanpa hint -->
-                        <label class="block text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wider">Nama Lengkap Siswa</label>
+                        <label class="block text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wider font-body">Nama Lengkap Siswa</label>
                         <input type="text" id="input-nama" required autocomplete="off" class="w-full font-body border-2 border-slate-200 bg-slate-50 text-slate-800 p-3.5 rounded-xl text-sm font-bold outline-none focus:border-slate-400 focus:bg-white transition-all shadow-sm">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wider">Password (PIN)</label>
+                        <label class="block text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wider font-body">Password (PIN)</label>
                         <input type="password" id="input-password" required class="w-full font-body border-2 border-slate-200 bg-slate-50 text-slate-800 p-3.5 rounded-xl text-sm font-bold outline-none focus:border-slate-400 focus:bg-white transition-all shadow-sm">
                     </div>
 
-                    <button type="submit" id="btn-login" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl mt-4 flex justify-center items-center gap-2 text-base">
+                    <button type="submit" id="btn-login" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold py-4 rounded-xl transition-all shadow-lg hover:shadow-xl mt-4 flex justify-center items-center gap-2 text-base font-body">
                         <span>Masuk ke Dasbor</span>
                     </button>
                 </form>
                 
-                <!-- Loading State -->
-                <div id="login-loading" class="hidden mt-6 flex justify-center items-center gap-3 text-sm font-bold text-slate-600">
+                <!-- Loading State saat Login -->
+                <div id="login-loading" class="hidden mt-6 flex justify-center items-center gap-3 text-sm font-bold text-slate-600 font-body">
                      <i class="fas fa-circle-notch fa-spin text-lg"></i> Mengautentikasi data...
                 </div>
             </div>
@@ -170,22 +169,22 @@
             </div>
             
             <nav class="flex-1 p-4 space-y-2 overflow-y-auto mt-2">
-                <button onclick="switchTab('jadwal')" id="nav-jadwal" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 text-slate-300 font-bold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left">
+                <button onclick="switchTab('jadwal')" id="nav-jadwal" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 text-slate-300 font-bold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left font-body">
                     <i class="fas fa-calendar-alt w-5 text-center text-lg"></i> Jadwal Pelajaran
                 </button>
-                <button onclick="switchTab('presensi')" id="nav-presensi" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 text-slate-300 font-bold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left">
+                <button onclick="switchTab('presensi')" id="nav-presensi" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 text-slate-300 font-bold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left font-body">
                     <i class="fas fa-user-check w-5 text-center text-lg"></i> Kehadiran Siswa
                 </button>
-                <button onclick="switchTab('dokumen')" id="nav-dokumen" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 text-slate-300 font-bold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left">
+                <button onclick="switchTab('dokumen')" id="nav-dokumen" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 text-slate-300 font-bold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left font-body">
                     <i class="fas fa-folder-open w-5 text-center text-lg"></i> Dokumen Akademik
                 </button>
-                <button onclick="switchTab('pengaturan')" id="nav-pengaturan" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 text-slate-300 font-bold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left">
+                <button onclick="switchTab('pengaturan')" id="nav-pengaturan" class="nav-btn w-full flex items-center gap-3 px-4 py-3.5 text-slate-300 font-bold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left font-body">
                     <i class="fas fa-shield-alt w-5 text-center text-lg"></i> Keamanan Akun
                 </button>
             </nav>
             
             <div class="p-4 border-t border-white/10 bg-black/20">
-                <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-3.5 text-red-400 font-extrabold rounded-xl text-sm hover:bg-red-500/10 hover:text-red-300 transition-all border border-red-500/20">
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-3.5 text-red-400 font-extrabold rounded-xl text-sm hover:bg-red-500/10 hover:text-red-300 transition-all border border-red-500/20 font-body">
                     <i class="fas fa-sign-out-alt"></i> Keluar Sesi
                 </button>
             </div>
@@ -224,8 +223,8 @@
                             <p class="text-sm font-bold text-slate-500 mt-1 font-body hidden print:block print-student-name">Nama: <span id="print-nama-siswa"></span> | Kelas: <span id="print-kelas-siswa"></span></p>
                         </div>
                         
-                        <!-- Tombol Cetak PDF (Otomatis hilang saat print) -->
-                        <button onclick="exportJadwalToPDF()" id="btn-print" class="hide-on-print bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-5 rounded-xl text-sm transition-colors shadow-md flex items-center gap-2">
+                        <!-- Tombol Cetak PDF -->
+                        <button onclick="exportJadwalToPDF()" id="btn-print" class="hide-on-print bg-slate-800 hover:bg-slate-700 text-white font-bold py-2.5 px-5 rounded-xl text-sm transition-colors shadow-md flex items-center gap-2 font-body">
                             <i class="fas fa-file-pdf"></i> Simpan ke PDF
                         </button>
                     </div>
@@ -244,7 +243,7 @@
                                 </tr>
                             </thead>
                             <tbody id="jadwal-body" class="divide-y divide-slate-100">
-                                <!-- Data Jadwal -->
+                                <!-- Data Jadwal akan di-render di sini -->
                             </tbody>
                         </table>
                     </div>
@@ -264,22 +263,22 @@
                     </div>
                     <div class="p-6 bg-slate-50/30">
                         <div id="presensi-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                            <!-- Data Presensi -->
+                            <!-- Data Presensi akan di-render di sini -->
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 3: DOKUMEN AKADEMIK (Berdasarkan Mapel) -->
+            <!-- TAB 3: DOKUMEN AKADEMIK -->
             <div id="tab-dokumen" class="tab-content hidden fade-in flex-1">
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6">
                     <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50">
                         <h2 class="font-black text-xl text-slate-800"><i class="fas fa-folder-open mr-2 text-slate-400"></i> Dokumen Akademik & Ujian</h2>
-                        <p class="text-sm text-slate-500 font-semibold mt-1">Modul materi dan akses ujian sesuai dengan mata pelajaran siswa.</p>
+                        <p class="text-sm text-slate-500 font-semibold mt-1 font-body">Modul materi dan akses ujian sesuai dengan mata pelajaran siswa.</p>
                     </div>
                     <div class="p-6 bg-slate-50/30">
                         <div id="dokumen-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                            <!-- Tombol Ujian per Mapel di-render di sini -->
+                            <!-- Tombol Ujian per Mapel di-render otomatis di sini -->
                         </div>
                     </div>
                 </div>
@@ -300,7 +299,7 @@
                                 <label class="block text-xs font-extrabold text-slate-500 mb-2 uppercase tracking-wider font-body">Konfirmasi Password</label>
                                 <input type="password" id="pwd-konfirmasi" required placeholder="Ulangi password baru..." class="w-full font-body border-2 border-slate-200 bg-slate-50 p-3.5 rounded-xl text-sm font-bold focus:bg-white focus:border-slate-400 outline-none shadow-sm transition-all">
                             </div>
-                            <button type="submit" id="btn-save-pwd" class="w-full text-white font-extrabold py-3.5 rounded-xl shadow-md mt-2 transition-colors duration-500 flex justify-center items-center gap-2 text-base">
+                            <button type="submit" id="btn-save-pwd" class="w-full text-white font-extrabold py-3.5 rounded-xl shadow-md mt-2 transition-colors duration-500 flex justify-center items-center gap-2 text-base font-body">
                                 <i class="fas fa-save"></i> Perbarui Password
                             </button>
                         </form>
@@ -321,9 +320,12 @@
         <span id="toast-msg"></span>
     </div>
 
+    <!-- Awesomplete JS (Auto-suggest) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+
     <script>
         // ==========================================
-        // KONFIGURASI SUPABASE (WAJIB DIISI)
+        // KONFIGURASI SUPABASE
         // ==========================================
         const SUPABASE_URL = 'https://nqexcwcissrnxtxalkxn.supabase.co'; 
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xZXhjd2Npc3Nybnh0eGFsa3huIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1Mjc3NDYsImV4cCI6MjEwMjEwMzc0Nn0.YourAnonKeyHere'; 
@@ -337,7 +339,7 @@
         let awesompleteInstance; 
         let studentSubjects = new Set(); // Menyimpan mapel unik untuk Tab Dokumen
 
-        // Inisialisasi awal
+        // Inisialisasi awal saat DOM siap
         document.addEventListener("DOMContentLoaded", async () => {
             await fetchAllStudentNames();
             initAutoSuggest();
@@ -350,6 +352,7 @@
                 if (error) throw error;
                 if(data) {
                     allStudentsList = [...new Set(data.map(item => item.nama_lengkap ? item.nama_lengkap.trim() : ""))].filter(Boolean);
+                    if(awesompleteInstance) awesompleteInstance.list = allStudentsList;
                 }
             } catch (err) {
                 console.error("Gagal memuat daftar nama siswa.", err);
@@ -358,12 +361,14 @@
 
         function initAutoSuggest() {
             const inputElement = document.getElementById("input-nama");
-            awesompleteInstance = new Awesomplete(inputElement, {
-                list: allStudentsList,
-                minChars: 2, 
-                maxItems: 6, 
-                autoFirst: true 
-            });
+            if (inputElement) {
+                awesompleteInstance = new Awesomplete(inputElement, {
+                    list: allStudentsList,
+                    minChars: 2, 
+                    maxItems: 6, 
+                    autoFirst: true 
+                });
+            }
         }
 
         // ==========================================
@@ -404,21 +409,22 @@
             toggleLoginLoading(true);
             
             try {
-                // Pencarian Case Insensitive
+                // Pencarian toleran huruf besar/kecil & spasi
                 const { data, error } = await supabaseClient
                     .from('master_data_siswa')
                     .select('*')
-                    .ilike('nama_lengkap', nama)
+                    .ilike('nama_lengkap', `%${nama}%`) 
                     .limit(1)
                     .single();
 
                 if (error || !data) {
                     toggleLoginLoading(false);
-                    showToast("Nama siswa tidak ditemukan. Pastikan nama diketik sesuai daftar.");
+                    showToast("Nama tidak ditemukan di database. Pastikan RLS Supabase sudah terbuka.");
+                    console.error("Error Detail:", error);
                     return;
                 }
 
-                if (data.password_awal === password) {
+                if (data.password_awal.toString().trim() === password.trim()) {
                     currentSession = data;
                     applyThemeBranding(data.jenjang);
                     
@@ -433,8 +439,12 @@
                 }
             } catch (err) {
                 toggleLoginLoading(false);
-                showToast("Terjadi kendala jaringan atau hak akses (RLS) belum dibuka.");
-                console.error(err);
+                if (err.code === 'PGRST116') {
+                    showToast("Siswa dengan nama tersebut tidak terdaftar di database.");
+                } else {
+                    showToast("Terjadi kendala saat menghubungi database.");
+                }
+                console.error("Catch Error:", err);
             }
         }
 
@@ -460,7 +470,7 @@
                 
                 badge.className = "bg-emerald-100 text-emerald-700 text-xs font-bold px-3.5 py-1.5 rounded-lg border border-emerald-200 shadow-sm transition-colors duration-500 font-body";
                 headTable.className = "bg-[#00bb96] text-white transition-colors duration-500 rounded-t-xl";
-                btnSavePwd.className = "w-full bg-[#00bb96] hover:bg-[#00a382] text-white font-extrabold py-3.5 rounded-xl shadow-md mt-4 transition-colors duration-500 flex justify-center items-center gap-2 text-base";
+                btnSavePwd.className = "w-full bg-[#00bb96] hover:bg-[#00a382] text-white font-extrabold py-3.5 rounded-xl shadow-md mt-4 transition-colors duration-500 flex justify-center items-center gap-2 text-base font-body";
                 if(btnPrint) btnPrint.className = "hide-on-print bg-[#00bb96] hover:bg-[#00a382] text-white font-bold py-2.5 px-5 rounded-xl text-sm transition-colors shadow-md flex items-center gap-2 font-body";
                 document.getElementById('spinner-loader').style.borderTopColor = "#00bb96";
                 
@@ -473,7 +483,7 @@
                 
                 badge.className = "bg-amber-100 text-amber-700 text-xs font-bold px-3.5 py-1.5 rounded-lg border border-amber-200 shadow-sm transition-colors duration-500 font-body";
                 headTable.className = "bg-amber-500 text-white transition-colors duration-500 rounded-t-xl";
-                btnSavePwd.className = "w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3.5 rounded-xl shadow-md mt-4 transition-colors duration-500 flex justify-center items-center gap-2 text-base";
+                btnSavePwd.className = "w-full bg-amber-500 hover:bg-amber-600 text-white font-extrabold py-3.5 rounded-xl shadow-md mt-4 transition-colors duration-500 flex justify-center items-center gap-2 text-base font-body";
                 if(btnPrint) btnPrint.className = "hide-on-print bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 px-5 rounded-xl text-sm transition-colors shadow-md flex items-center gap-2 font-body";
                 document.getElementById('spinner-loader').style.borderTopColor = "#f59e0b";
                 
@@ -481,7 +491,7 @@
                 themeColor = "#475569"; 
                 accentBar.style.backgroundColor = "#475569";
                 headTable.className = "bg-slate-700 text-white transition-colors duration-500 rounded-t-xl";
-                btnSavePwd.className = "w-full bg-slate-700 hover:bg-slate-800 text-white font-extrabold py-3.5 rounded-xl shadow-md mt-4 transition-colors duration-500 flex justify-center items-center gap-2 text-base";
+                btnSavePwd.className = "w-full bg-slate-700 hover:bg-slate-800 text-white font-extrabold py-3.5 rounded-xl shadow-md mt-4 transition-colors duration-500 flex justify-center items-center gap-2 text-base font-body";
                 if(btnPrint) btnPrint.className = "hide-on-print bg-slate-700 hover:bg-slate-800 text-white font-bold py-2.5 px-5 rounded-xl text-sm transition-colors shadow-md flex items-center gap-2 font-body";
                 document.getElementById('spinner-loader').style.borderTopColor = "#475569";
             }
@@ -494,12 +504,12 @@
             document.getElementById('loading-view').classList.remove('hidden');
             document.getElementById('loading-text').innerText = "Menyiapkan Dasbor Akademik...";
             
-            studentSubjects.clear(); // Bersihkan mapel dari sesi sebelumnya
+            studentSubjects.clear();
 
             try {
                 renderHeaderInfo();
                 await Promise.all([ loadJadwalData(), loadPresensiData() ]);
-                renderDokumenUjian(); // Render dokumen setelah mapel terkumpul
+                renderDokumenUjian();
             } catch (err) {
                 console.error("Gagal memuat data dasbor", err);
                 showToast("Terjadi kendala saat memuat rekam data.");
@@ -526,7 +536,7 @@
             }
             document.getElementById('sidebar-jenjang-subtitle').innerText = currentSession.jenjang || "Portal Siswa";
             
-            // Siapkan untuk PDF
+            // Siapkan info untuk cetak PDF
             document.getElementById('print-nama-siswa').innerText = currentSession.nama_lengkap;
             document.getElementById('print-kelas-siswa').innerText = txtKelas;
         }
@@ -535,7 +545,6 @@
             const tbody = document.getElementById('jadwal-body');
             tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center font-bold text-slate-400">Menyusun jadwal...</td></tr>';
             
-            // Asumsi: Tarik semua jadwal_flat. Jika ada kolom filter spesifik kelas, bisa ditambahkan .eq('kelas', currentSession.kelas)
             const { data, error } = await supabaseClient.from('jadwal_flat').select('*');
             if (error || !data || data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center font-bold text-slate-400">Jadwal belum tersedia di database.</td></tr>';
@@ -550,7 +559,7 @@
                 const jSelesai = (item.jam_selesai || "").trim();
                 if(!jMulai || mapel === "EMPTY" || mapel === "-") return;
 
-                studentSubjects.add(mapel); // Kumpulkan untuk Tab Dokumen
+                studentSubjects.add(mapel);
 
                 const timeKey = jSelesai ? `${jMulai} - ${jSelesai}` : jMulai;
                 if (!jadwalMap.has(timeKey)) {
@@ -558,7 +567,6 @@
                 }
                 const entry = jadwalMap.get(timeKey);
                 
-                // Cari key hari yang valid
                 const validHari = ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu'].find(h => hari.includes(h));
                 if (validHari) {
                     entry[validHari] = entry[validHari] ? entry[validHari] + "<br><span class='text-xs opacity-75'>+ " + mapel + "</span>" : mapel;
@@ -648,12 +656,11 @@
             }
         }
 
-        // 3. Render Tab Dokumen secara Dinamis
+        // Render Tab Dokumen
         function renderDokumenUjian() {
             const container = document.getElementById('dokumen-container');
             container.innerHTML = '';
             
-            // Hapus mapel yang tidak relevan (seperti "Umum", "EMPTY", dll jika ada)
             const mapelValid = Array.from(studentSubjects).filter(m => m && m.length > 2 && m !== "Umum");
 
             if(mapelValid.length === 0) {
@@ -687,16 +694,15 @@
         }
 
         function bukaDokumen(mapel, tipe) {
-            showToast(`Mengalihkan ke ${tipe} untuk pelajaran: ${mapel}... (Fitur URL Terhubung Segera)`);
+            showToast(`Mengalihkan ke ${tipe} untuk pelajaran: ${mapel}...`);
         }
 
-        // Fitur Cetak PDF Menggunakan html2pdf.js
+        // Fitur Cetak PDF
         function exportJadwalToPDF() {
             const element = document.getElementById('print-area-jadwal');
             const btn = document.getElementById('btn-print');
             const originalText = btn.innerHTML;
             
-            // Persiapan sebelum print (Tampilkan nama siswa)
             document.querySelectorAll('.print-student-name').forEach(el => {
                 el.classList.remove('hidden');
                 el.classList.add('block');
@@ -713,7 +719,6 @@
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
-                // Kembalikan ke tampilan layar
                 document.querySelectorAll('.print-student-name').forEach(el => {
                     el.classList.add('hidden');
                     el.classList.remove('block');
@@ -768,7 +773,7 @@
                 currentSession.password_awal = pBaru;
             } catch (err) {
                 console.error(err);
-                showToast("Gagal memperbarui password (Cek izin RLS Update).");
+                showToast("Gagal memperbarui password.");
             }
         }
 
