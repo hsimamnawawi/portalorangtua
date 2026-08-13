@@ -195,7 +195,6 @@
     <!-- MAIN APP CONTAINER -->
     <div id="app-container" class="hidden min-h-screen bg-slate-50 flex-col md:flex-row relative">
         
-        <!-- Loading Overlay Saat Transisi Ke Dashboard -->
         <div id="loading-view" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95 backdrop-blur-sm hidden transition-opacity duration-300">
             <div id="spinner-loader" class="w-14 h-14 border-4 border-slate-200 rounded-full animate-spin mb-5 shadow-sm"></div>
             <p id="loading-text" class="font-display font-bold text-xl text-slate-800 tracking-tight">Memuat modul akademik...</p>
@@ -271,7 +270,6 @@
                 <!-- TAB 1 & 2: JADWAL KELAS & TUTOR -->
                 <div id="tab-jadwal" class="tab-content block fade-in flex-1">
                     
-                    <!-- Area Cetak PDF -->
                     <div id="print-area-jadwal" class="bg-transparent flex flex-col gap-6">
                         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
                             <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 hide-on-print">
@@ -280,13 +278,11 @@
                                 </div>
                                 
                                 <div class="flex items-center w-full lg:w-auto gap-3">
-                                    <!-- Tombol Kalender yang diperbarui -->
                                     <div id="kalender-container" class="hidden h-full">
                                         <a id="btn-kalender" href="#" target="_blank" class="w-full lg:w-auto h-full flex justify-center bg-white hover:bg-slate-50 text-theme-main font-bold py-2.5 px-4 rounded-xl text-sm shadow-sm items-center gap-2 border-2 border-theme-main transition-all">
                                             <i class="fas fa-calendar-day text-lg"></i> Kalender Akademik
                                         </a>
                                     </div>
-
                                     <button onclick="exportJadwalToPDF()" id="btn-print" class="w-full lg:w-auto h-full justify-center btn-theme-gradient font-semibold py-2.5 px-6 rounded-xl text-sm shadow-md flex items-center gap-2">
                                         <i class="fas fa-file-pdf"></i> <span id="text-btn-print">Unduh Jadwal</span>
                                     </button>
@@ -824,6 +820,7 @@
                 if (data && data.length > 0) {
                     let row = data.find(r => {
                         let jDb = (r.jenjang || "").trim().toLowerCase();
+                        // Lebih toleran saat membandingkan string
                         return jDb === jUser || jUser.includes(jDb) || jDb.includes(jUser);
                     });
 
