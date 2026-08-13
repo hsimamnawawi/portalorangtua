@@ -22,46 +22,73 @@
     <!-- html2pdf JS (Untuk fitur Cetak PDF) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: { 
-                        sans: ['Inter', 'sans-serif'], // Body text
-                        display: ['Space Grotesk', 'sans-serif'] // Headings
+                        sans: ['Inter', 'sans-serif'], 
+                        display: ['Space Grotesk', 'sans-serif'] 
                     }
                 }
             }
         }
     </script>
+    
     <style>
+        /* Dynamic Theme Variables - Diisi via JS berdasarkan Jenjang */
+        :root {
+            --theme-main: #475569;
+            --theme-grad-1: #475569;
+            --theme-grad-2: #64748b;
+            --theme-shadow: rgba(71, 85, 105, 0.3);
+        }
+
         body { background-color: #f8fafc; }
         .font-display { font-family: 'Space Grotesk', sans-serif; }
         .fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
+        /* Toast Animations */
         .toast-enter { transform: translateY(0); opacity: 1; pointer-events: auto; }
         .toast-exit { transform: translateY(150%); opacity: 0; pointer-events: none; }
         
-        /* Custom Styling for Awesomplete */
+        /* Awesomplete Styles */
         .awesomplete { width: 100%; display: block; }
         .awesomplete > ul { border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0; margin-top: 0.25rem; font-size: 0.95rem; font-weight: 600; z-index: 50; max-height: 250px; overflow-y: auto;}
         .awesomplete > ul > li { padding: 0.85rem 1.2rem; color: #475569; transition: all 0.2s; }
         .awesomplete > ul > li:hover, .awesomplete > ul > li[aria-selected="true"] { background-color: #f1f5f9; color: #0f172a; }
         .awesomplete mark { background: transparent; font-weight: 700; color: #0f172a; }
 
+        /* Dynamic Theme Classes */
+        .theme-bg-grad { 
+            background: linear-gradient(135deg, var(--theme-grad-1), var(--theme-grad-2)) !important; 
+            color: white !important;
+            box-shadow: 0 4px 15px -3px var(--theme-shadow) !important;
+            border: none !important;
+        }
+        .theme-text { color: var(--theme-main) !important; }
+        .theme-border { border-color: var(--theme-main) !important; }
+        .theme-hover-btn:hover {
+            background-color: var(--theme-main) !important;
+            color: white !important;
+            border-color: var(--theme-main) !important;
+        }
+
+        /* Print Styles */
         @media print {
             .hide-on-print { display: none !important; }
             .print-break-inside-avoid { break-inside: avoid; }
             #tab-jadwal { margin: 0; padding: 0; }
             body { background: white; }
-            /* Memastikan PDF tidak terpotong ke samping */
             .overflow-x-auto { overflow: visible !important; }
             table { width: 100% !important; table-layout: fixed; }
             th, td { word-wrap: break-word; white-space: normal !important; }
@@ -158,7 +185,7 @@
         
         <!-- Loading Overlay -->
         <div id="loading-view" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95 backdrop-blur-sm hidden transition-opacity duration-300">
-            <div id="spinner-loader" class="w-14 h-14 border-4 border-slate-200 rounded-full animate-spin mb-5 shadow-sm"></div>
+            <div id="spinner-loader" class="w-14 h-14 border-4 border-slate-200 rounded-full animate-spin mb-5 shadow-sm border-t-[#475569]"></div>
             <p id="loading-text" class="font-display font-bold text-xl text-slate-800 tracking-tight">Memuat modul akademik...</p>
         </div>
 
@@ -211,10 +238,10 @@
             
             <!-- Header Info Siswa -->
             <div class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden mb-6 hide-on-print">
-                <div id="header-accent-bar" class="absolute top-0 left-0 w-2 h-full transition-colors duration-500"></div>
+                <div id="header-accent-bar" class="absolute top-0 left-0 w-2 h-full transition-colors duration-500 bg-slate-400"></div>
                 
                 <div class="flex items-center gap-4 pl-4">
-                    <div id="user-avatar-box" class="w-14 h-14 rounded-full bg-slate-50 text-slate-400 border-2 border-slate-100 flex items-center justify-center text-2xl shrink-0 shadow-sm transition-colors duration-500">
+                    <div id="user-avatar-box" class="w-14 h-14 rounded-full bg-slate-50 text-slate-400 flex items-center justify-center text-2xl shrink-0 transition-colors duration-500">
                         <i class="fas fa-user-graduate"></i>
                     </div>
                     <div>
@@ -241,10 +268,10 @@
                             </div>
                             
                             <div class="flex items-center gap-3 w-full lg:w-auto">
-                                <a id="btn-kalender" href="#" target="_blank" class="hidden flex-1 lg:flex-none justify-center bg-white border border-[#00bb96] text-[#00bb96] hover:bg-[#00bb96] hover:text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-colors shadow-sm items-center gap-2">
+                                <a id="btn-kalender" href="#" target="_blank" class="hidden flex-1 lg:flex-none justify-center bg-white border text-slate-600 theme-text theme-border theme-hover-btn font-semibold py-2.5 px-4 rounded-xl text-sm transition-colors shadow-sm items-center gap-2">
                                     <i class="fas fa-calendar-day"></i> Kalender Akademik
                                 </a>
-                                <button onclick="exportJadwalToPDF()" id="btn-print" class="flex-1 lg:flex-none justify-center bg-[#00bb96] hover:bg-[#00a382] text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition-colors shadow-md flex items-center gap-2">
+                                <button onclick="exportJadwalToPDF()" id="btn-print" class="flex-1 lg:flex-none justify-center theme-bg-grad font-semibold py-2.5 px-4 rounded-xl text-sm transition-colors flex items-center gap-2">
                                     <i class="fas fa-file-pdf"></i> <span id="text-btn-print">Unduh Jadwal</span>
                                 </button>
                             </div>
@@ -258,7 +285,7 @@
                         
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm border-collapse">
-                                <thead id="table-jadwal-head" class="bg-[#00bb96] text-white transition-colors duration-500">
+                                <thead id="table-jadwal-head" class="text-white transition-colors duration-500">
                                     <tr>
                                         <th class="p-4 font-semibold text-center whitespace-normal break-words w-24 md:w-32 border-r border-white/20">Waktu</th>
                                         <th class="p-4 font-semibold text-center border-r border-white/20">Senin</th>
@@ -278,16 +305,16 @@
                         <!-- Blok Catatan -->
                         <div class="p-6 bg-slate-50 border-t border-slate-100">
                             <h3 class="font-display font-bold text-slate-700 flex items-center gap-2 mb-3 text-sm">
-                                <i class="fas fa-bookmark text-[#00bb96] text-lg"></i> Catatan
+                                <i class="fas fa-bookmark theme-text text-lg"></i> Catatan
                             </h3>
-                            <ul class="list-disc list-inside text-sm text-slate-600 space-y-2 marker:text-[#00bb96]">
+                            <ul class="list-disc list-inside text-sm text-slate-600 space-y-2 marker:text-slate-400">
                                 <li>Jadwal Halaqah Al-Quran terpisah, Ayah/Bunda dapat melihat (PDF) jadwal halaqah Al-Quran di grup Halaqah atau Google Classroom.</li>
                                 <li>Bila ada perubahan jadwal, akan diinfokan langsung oleh Tutor Mapel.</li>
                             </ul>
                         </div>
                     </div>
 
-                    <!-- Bagian Tutor (Akan Tercetak Bersama Jadwal) -->
+                    <!-- Bagian Tutor -->
                     <div id="tutor-section" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden scroll-mt-6 print-break-inside-avoid mt-2">
                         <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 hide-on-print">
                             <h2 class="font-display font-bold text-xl text-slate-800 flex items-center gap-2"><i class="fas fa-chalkboard-teacher text-slate-400"></i> Tutor Saya</h2>
@@ -300,9 +327,9 @@
                         <!-- Area Wali Kelas -->
                         <div class="p-6 border-b border-slate-100">
                             <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Wali Kelas</h3>
-                            <div id="wali-kelas-container" class="flex flex-col sm:flex-row items-center justify-between border border-emerald-100 bg-emerald-50/30 rounded-xl p-4 gap-4">
+                            <div id="wali-kelas-container" class="flex flex-col sm:flex-row items-center justify-between border border-slate-200 bg-slate-50 rounded-xl p-4 gap-4 shadow-sm">
                                 <div class="flex items-center gap-4 w-full sm:w-auto">
-                                    <div class="w-12 h-12 rounded-full bg-emerald-100 text-[#00bb96] flex items-center justify-center text-xl shrink-0">
+                                    <div class="w-12 h-12 rounded-full theme-bg-grad text-white flex items-center justify-center text-xl shrink-0">
                                         <i class="fas fa-user-tie"></i>
                                     </div>
                                     <div>
@@ -311,8 +338,7 @@
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-4 w-full sm:w-auto justify-end">
-                                    <span id="wali-no-hp" class="text-sm font-semibold text-slate-600 font-mono"></span>
-                                    <a href="#" id="wali-wa" target="_blank" class="bg-[#00bb96] hover:bg-[#00a382] text-white px-5 py-2.5 rounded-full font-semibold text-sm flex items-center justify-center gap-2 transition-colors shadow-sm w-full sm:w-auto hide-on-print">
+                                    <a href="#" id="wali-wa" target="_blank" class="theme-bg-grad px-5 py-2.5 rounded-full font-semibold text-sm flex items-center justify-center gap-2 transition-transform hover:scale-105 w-full sm:w-auto hide-on-print">
                                         <i class="fab fa-whatsapp text-lg"></i> Hubungi Wali Kelas
                                     </a>
                                 </div>
@@ -357,7 +383,7 @@
                         </div>
                     </div>
                     <div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center gap-4 shadow-sm">
-                        <div class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl"><i class="fas fa-percentage"></i></div>
+                        <div class="w-12 h-12 rounded-full theme-bg-grad flex items-center justify-center text-xl"><i class="fas fa-percentage"></i></div>
                         <div>
                             <p class="text-xs font-bold text-slate-400 uppercase">Persentase</p>
                             <p id="stat-persen" class="font-display font-bold text-2xl text-slate-800">0%</p>
@@ -377,7 +403,8 @@
                     </div>
                     <div class="p-6 bg-slate-50/30">
                         <p class="text-sm text-slate-500 mb-6">Bunda/Ayah, berikut adalah rincian ketidakhadiran Ananda pada setiap sesi pertemuan per pekan.</p>
-                        <div id="presensi-container" class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                        <!-- Updated grid definition to items-start for tidy layout -->
+                        <div id="presensi-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                             <!-- Data Presensi Format Tabel -->
                         </div>
                     </div>
@@ -393,13 +420,13 @@
                     </div>
                     <div class="p-6 bg-slate-50/30">
                         <!-- Kuartal 1 -->
-                        <h3 class="font-display font-bold text-lg text-slate-700 mb-4 border-l-4 border-indigo-500 pl-3">Kuartal 1</h3>
+                        <h3 class="font-display font-bold text-lg text-slate-700 mb-4 border-l-4 theme-border pl-3">Kuartal 1</h3>
                         <div id="dokumen-k1-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
                             <!-- Tombol Ujian K1 -->
                         </div>
 
                         <!-- Kuartal 2 -->
-                        <h3 class="font-display font-bold text-lg text-slate-700 mb-4 border-l-4 border-indigo-500 pl-3">Kuartal 2</h3>
+                        <h3 class="font-display font-bold text-lg text-slate-700 mb-4 border-l-4 theme-border pl-3">Kuartal 2</h3>
                         <div id="dokumen-k2-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                             <!-- Tombol Ujian K2 -->
                         </div>
@@ -437,13 +464,13 @@
                         </div>
                         <div class="p-6 bg-slate-50/50">
                             <!-- Kuartal 1 -->
-                            <h3 class="font-display font-bold text-md text-slate-700 mb-3 border-l-4 border-blue-500 pl-3">Kuartal 1</h3>
+                            <h3 class="font-display font-bold text-md text-slate-700 mb-3 border-l-4 theme-border pl-3">Kuartal 1</h3>
                             <div id="rekap-tutor-k1-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-6">
                                 <!-- Tombol Nilai Asli K1 -->
                             </div>
 
                             <!-- Kuartal 2 -->
-                            <h3 class="font-display font-bold text-md text-slate-700 mb-3 border-l-4 border-blue-500 pl-3">Kuartal 2</h3>
+                            <h3 class="font-display font-bold text-md text-slate-700 mb-3 border-l-4 theme-border pl-3">Kuartal 2</h3>
                             <div id="rekap-tutor-k2-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                                 <!-- Tombol Nilai Asli K2 -->
                             </div>
@@ -486,7 +513,7 @@
                                     </button>
                                 </div>
                             </div>
-                            <button type="submit" id="btn-save-pwd" class="w-full bg-[#1e293b] hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl shadow-md mt-4 transition-colors duration-500 flex justify-center items-center gap-2 text-base">
+                            <button type="submit" id="btn-save-pwd" class="w-full theme-bg-grad font-bold py-3.5 rounded-xl shadow-md mt-4 transition-transform hover:scale-[1.02] flex justify-center items-center gap-2 text-base">
                                 <i class="fas fa-save"></i> Perbarui Password
                             </button>
                         </form>
@@ -519,7 +546,6 @@
 
         // State Aplikasi
         let currentSession = null;
-        let themeColor = "#1e293b"; 
         let allStudentsList = []; 
         let awesompleteInstance; 
         
@@ -572,12 +598,10 @@
             const icon = document.getElementById(iconId);
             if (input.type === "password") {
                 input.type = "text";
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
             } else {
                 input.type = "password";
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
             }
         }
 
@@ -591,6 +615,36 @@
                 btn.classList.remove('hidden');
                 loader.classList.add('hidden');
             }
+        }
+
+        function applyThemeBranding(jenjang) {
+            const jLower = (jenjang || "").toLowerCase();
+            let cMain, cGrad1, cGrad2, shadowColor;
+
+            // Logika Warna Berdasarkan Request
+            if (jLower.includes("tk")) {
+                cMain = "#69489d"; cGrad1 = "#69489d"; cGrad2 = "#8a63c7"; shadowColor = "rgba(105, 72, 157, 0.35)";
+            } else if (jLower.includes("tbsd")) {
+                cMain = "#69489d"; cGrad1 = "#69489d"; cGrad2 = "#fc8370"; shadowColor = "rgba(105, 72, 157, 0.35)";
+            } else if (jLower.includes("sd") && !jLower.includes("tbsd")) {
+                cMain = "#f4816f"; cGrad1 = "#f4816f"; cGrad2 = "#f8a395"; shadowColor = "rgba(244, 129, 111, 0.35)";
+            } else if (jLower.includes("putra")) {
+                cMain = "#f4c41d"; cGrad1 = "#f4c41d"; cGrad2 = "#f7d65b"; shadowColor = "rgba(244, 196, 29, 0.35)";
+            } else if (jLower.includes("putri")) {
+                cMain = "#00bb96"; cGrad1 = "#00bb96"; cGrad2 = "#33d1b3"; shadowColor = "rgba(0, 187, 150, 0.35)";
+            } else {
+                cMain = "#475569"; cGrad1 = "#475569"; cGrad2 = "#64748b"; shadowColor = "rgba(71, 85, 105, 0.35)";
+            }
+
+            // Set CSS Variables
+            document.documentElement.style.setProperty('--theme-main', cMain);
+            document.documentElement.style.setProperty('--theme-grad-1', cGrad1);
+            document.documentElement.style.setProperty('--theme-grad-2', cGrad2);
+            document.documentElement.style.setProperty('--theme-shadow', shadowColor);
+
+            // Set Accent Bar Color
+            document.getElementById('header-accent-bar').style.backgroundColor = cMain;
+            document.getElementById('spinner-loader').style.borderTopColor = cMain;
         }
 
         async function handleLogin(e) {
@@ -634,78 +688,6 @@
             }
         }
 
-        function applyThemeBranding(jenjang) {
-            const accentBar = document.getElementById('header-accent-bar');
-            const avatarBox = document.getElementById('user-avatar-box');
-            const badge = document.getElementById('user-jenjang-badge');
-            const headTable = document.getElementById('table-jadwal-head');
-            
-            const jLower = jenjang ? jenjang.toLowerCase() : "";
-            
-            if (jLower.includes("putri")) {
-                themeColor = "#00bb96"; 
-                accentBar.style.backgroundColor = themeColor;
-                avatarBox.style.color = themeColor;
-                avatarBox.style.borderColor = "#ccf1e9"; 
-                avatarBox.style.backgroundColor = "#e6f8f4"; 
-                badge.className = "bg-emerald-100 text-emerald-700 text-xs font-bold px-3.5 py-1.5 rounded-lg border border-emerald-200 shadow-sm transition-colors duration-500";
-            } else if (jLower.includes("putra")) {
-                themeColor = "#f59e0b"; 
-                accentBar.style.backgroundColor = themeColor;
-                avatarBox.style.color = themeColor;
-                avatarBox.style.borderColor = "#fef3c7"; 
-                avatarBox.style.backgroundColor = "#fffbeb"; 
-                badge.className = "bg-amber-100 text-amber-700 text-xs font-bold px-3.5 py-1.5 rounded-lg border border-amber-200 shadow-sm transition-colors duration-500";
-            } else {
-                themeColor = "#475569"; 
-                accentBar.style.backgroundColor = themeColor;
-                badge.className = "bg-slate-100 text-slate-700 text-xs font-bold px-3.5 py-1.5 rounded-lg border border-slate-200 shadow-sm transition-colors duration-500";
-            }
-            
-            if(headTable) headTable.style.backgroundColor = themeColor;
-            document.querySelectorAll('#btn-save-pwd, #btn-print').forEach(btn => {
-                if(btn) btn.style.backgroundColor = themeColor;
-            });
-            document.getElementById('spinner-loader').style.borderTopColor = themeColor;
-        }
-
-        async function loadPortalData() {
-            document.getElementById('loading-view').classList.remove('hidden');
-            document.getElementById('loading-text').innerText = "Menyiapkan Dasbor Akademik...";
-            
-            officialSubjects.clear();
-            foundSubjects.clear();
-
-            try {
-                renderHeaderInfo();
-                
-                // 1. Dapatkan daftar mapel patokan (kelas + jurusan + khusus dari master data)
-                await siapkanDaftarMapelResmi();
-                
-                // 2. Muat Kalender
-                await loadKalender();
-
-                // 3. Muat Modul (Jadwal & Presensi akan mengisi foundSubjects)
-                await Promise.all([ 
-                    loadJadwalData(), 
-                    loadPresensiData(),
-                    loadTutorData(),
-                    loadRekapNilai()
-                ]);
-                
-                // 4. Render Dokumen berdasarkan mapel yang ditemukan + patokan
-                renderDokumenUjian();
-                
-            } catch (err) {
-                console.error("Gagal memuat data dasbor", err);
-                showToast("Terjadi kendala saat memuat rekam data.");
-            } finally {
-                document.getElementById('loading-view').classList.add('hidden');
-                toggleLoginLoading(false);
-                switchTab('jadwal'); 
-            }
-        }
-
         async function siapkanDaftarMapelResmi() {
             // A. Tambahkan Mapel Khusus dari tabel Master Data Siswa
             if(currentSession.pai && currentSession.pai !== "EMPTY") officialSubjects.add(currentSession.pai.trim());
@@ -727,36 +709,72 @@
             }
         }
 
-        // Fungsi Helper untuk cek apakah mapel X termasuk milik siswa ini
+        // Fungsi Helper Cerdas untuk mengecek mapel
         function isMapelMilikSiswa(namaMapelDicek) {
             if(!namaMapelDicek || namaMapelDicek === "EMPTY" || namaMapelDicek === "-") return false;
             
             let mDicekLower = namaMapelDicek.toLowerCase();
             
             // 1. Cek bypass: Jika mengandung nama kelas langsung (e.g. "MTK 10.A")
-            if (currentSession.kelas && mDicekLower.includes(currentSession.kelas.replace("Kelas ", "").toLowerCase())) {
-                return true;
-            }
+            let kClean = (currentSession.kelas || "").replace(/kelas/i, "").trim().toLowerCase();
+            let kCompact = kClean.replace(/[\.\s]/g, ""); // "10.a" menjadi "10a"
+            let mCompact = mDicekLower.replace(/[\.\s]/g, ""); // "mtk10a"
+            
+            if (kCompact && mCompact.includes(kCompact)) return true;
 
             // 2. Cek silang dengan officialSubjects
-            let mapelResmiLower = Array.from(officialSubjects).map(m => m.toLowerCase());
-            for (let mResmi of mapelResmiLower) {
-                // Cek apakah mResmi adalah bagian dari mDicekLower (e.g "Fiqih" ada di "Fiqih 10.A")
-                // ATAU sebaliknya "PAI" ada di "PAI Dasar 09-12.C"
-                if (mDicekLower.includes(mResmi) || mResmi.includes(mDicekLower)) {
+            for (let mResmi of Array.from(officialSubjects)) {
+                let rLow = mResmi.toLowerCase();
+                let rComp = rLow.replace(/[\.\s]/g, "");
+                // Cek bolak-balik: apakah MResmi ada di MDicek atau MDicek ada di MResmi
+                if (mCompact.includes(rComp) || rComp.includes(mCompact)) {
                     return true;
                 }
             }
             return false;
         }
 
-        // Fungsi Helper untuk me-replace nama generik dengan nama spesifik dari master data
         function getSpesifikNamaMapel(namaGeneric) {
             let n = namaGeneric.toLowerCase();
             if (n.includes('pai')) return (currentSession.pai && currentSession.pai !== "EMPTY") ? currentSession.pai : namaGeneric;
             if (n.includes('arab')) return (currentSession.b_arab && currentSession.b_arab !== "EMPTY") ? currentSession.b_arab : namaGeneric;
             if (n.includes('literasi islam') || n.includes('lit islam') || n.includes('literasi pkn')) return (currentSession.lit_islam && currentSession.lit_islam !== "EMPTY") ? currentSession.lit_islam : namaGeneric;
             return namaGeneric;
+        }
+
+        async function loadPortalData() {
+            document.getElementById('loading-view').classList.remove('hidden');
+            document.getElementById('loading-text').innerText = "Menyiapkan Dasbor Akademik...";
+            
+            officialSubjects.clear();
+            foundSubjects.clear();
+
+            try {
+                renderHeaderInfo();
+                
+                // 1. Dapatkan daftar mapel patokan
+                await siapkanDaftarMapelResmi();
+                
+                // 2. Muat Modul Paralel
+                await Promise.all([ 
+                    loadKalender(),
+                    loadJadwalData(), 
+                    loadPresensiData(),
+                    loadTutorData(),
+                    loadRekapNilai()
+                ]);
+                
+                // 3. Render Dokumen berdasarkan mapel yang terkumpul
+                renderDokumenUjian();
+                
+            } catch (err) {
+                console.error("Gagal memuat data dasbor", err);
+                showToast("Terjadi kendala saat memuat rekam data.");
+            } finally {
+                document.getElementById('loading-view').classList.add('hidden');
+                toggleLoginLoading(false);
+                switchTab('jadwal'); 
+            }
         }
 
         function renderHeaderInfo() {
@@ -778,24 +796,19 @@
             document.getElementById('print-nama-siswa').innerText = currentSession.nama_lengkap;
             document.getElementById('print-kelas-siswa').innerText = txtKelas;
             
-            // Panggilan Wali Kelas (Ustadz/Ustadzah)
+            // Render Wali Kelas
             const wNama = (currentSession.wali_kelas && currentSession.wali_kelas !== "EMPTY") ? currentSession.wali_kelas : "Admin Sekolah";
-            const jenjangLower = (currentSession.jenjang || "").toLowerCase();
-            let panggilan = "WALI KELAS";
-            if (jenjangLower.includes("putri")) panggilan = "WALI KELAS, Ustadzah";
-            else if (jenjangLower.includes("putra")) panggilan = "WALI KELAS, Ustadz";
-            
-            document.getElementById('wali-title').innerText = panggilan;
+            document.getElementById('wali-title').innerText = "WALI KELAS";
             document.getElementById('wali-nama').innerText = wNama;
             
-            const waDefault = "6281234567890"; // Dummy
-            document.getElementById('wali-wa').href = `https://wa.me/${waDefault}?text=Assalamu'alaikum,%20${panggilan.replace('WALI KELAS, ', '')}%20${encodeURIComponent(wNama)},%20saya%20wali%20dari%20${encodeURIComponent(currentSession.nama_lengkap)}`;
+            const waDefault = "6281234567890"; // Dummy fallback
+            document.getElementById('wali-wa').href = `https://wa.me/${waDefault}?text=Assalamu'alaikum,%20Wali%20Kelas%20${encodeURIComponent(wNama)},%20saya%20wali%20dari%20${encodeURIComponent(currentSession.nama_lengkap)}`;
         }
 
         async function loadKalender() {
             const btn = document.getElementById('btn-kalender');
             try {
-                const { data, error } = await supabaseClient
+                const { data } = await supabaseClient
                     .from('link_kalender')
                     .select('link_kalender')
                     .eq('jenjang', currentSession.jenjang || "")
@@ -807,7 +820,7 @@
                     btn.classList.remove('hidden');
                     btn.classList.add('flex');
                 }
-            } catch(e) { console.log("Kalender belum ada."); }
+            } catch(e) {}
         }
 
         async function loadJadwalData() {
@@ -830,12 +843,10 @@
                 const jSelesai = (item.jam_selesai || "").trim();
                 
                 if(!jMulai || mapelAsli === "EMPTY" || mapelAsli === "-") return;
-
                 if (!isMapelMilikSiswa(mapelAsli)) return;
 
-                // Replace nama jika itu mapel spesifik
                 mapelAsli = getSpesifikNamaMapel(mapelAsli);
-                foundSubjects.add(mapelAsli); // Simpan untuk referensi tab lain
+                foundSubjects.add(mapelAsli); 
 
                 const timeKey = jSelesai ? `${jMulai} - ${jSelesai}` : jMulai;
                 if (!jadwalMap.has(timeKey)) {
@@ -853,14 +864,9 @@
                 }
             });
 
-            // Cek apakah ada jadwal di hari sabtu
-            Array.from(jadwalMap.values()).forEach(item => {
-                if(item.sabtu !== "—") adaSabtu = true;
-            });
-
+            Array.from(jadwalMap.values()).forEach(item => { if(item.sabtu !== "—") adaSabtu = true; });
             const thSabtu = document.getElementById('th-sabtu');
-            if(adaSabtu) thSabtu.classList.remove('hidden');
-            else thSabtu.classList.add('hidden');
+            adaSabtu ? thSabtu.classList.remove('hidden') : thSabtu.classList.add('hidden');
 
             const sortedJadwal = Array.from(jadwalMap.values()).sort((a, b) => a.sortKey.localeCompare(b.sortKey));
             
@@ -895,11 +901,6 @@
                 return;
             }
 
-            const jenjangLower = (currentSession.jenjang || "").toLowerCase();
-            let jenjangPanggilan = "Tutor";
-            if (jenjangLower.includes("putri")) jenjangPanggilan = "Ustadzah";
-            else if (jenjangLower.includes("putra")) jenjangPanggilan = "Ustadz";
-
             let tutorDitampilkan = new Set();
             container.innerHTML = '';
             
@@ -907,7 +908,6 @@
                 let mapelTutor = (tutor.nama_mapel || "").trim();
                 const namaTutor = (tutor.nama_pengajar || "-").trim();
                 
-                // PENTING: Gunakan fungsi isMapelMilikSiswa agar sinkron dengan jadwal
                 if (!isMapelMilikSiswa(mapelTutor)) return;
                 
                 mapelTutor = getSpesifikNamaMapel(mapelTutor);
@@ -919,25 +919,26 @@
                     let noHP = (tutor.no_hp || "").replace(/\D/g, '');
                     if (noHP.startsWith('0')) noHP = '62' + noHP.substring(1);
                     
-                    let waLink = noHP ? `href="https://wa.me/${noHP}?text=Assalamu'alaikum,%20${jenjangPanggilan}%20${encodeURIComponent(namaTutor)},%20saya%20wali%20dari%20${encodeURIComponent(currentSession.nama_lengkap)}"` : 'href="#" onclick="showToast(\'Nomor WA Tutor belum tersedia.\'); return false;"';
+                    let waLink = noHP ? `href="https://wa.me/${noHP}?text=Assalamu'alaikum,%20Tutor%20${encodeURIComponent(namaTutor)},%20saya%20wali%20dari%20${encodeURIComponent(currentSession.nama_lengkap)}"` : 'href="#" onclick="showToast(\'Nomor WA Tutor belum tersedia.\'); return false;"';
 
+                    // Note: Nama tutor langsung di-render tanpa penambahan hardcode "Ustadzah"
                     container.innerHTML += `
-                        <div class="border border-slate-200 rounded-2xl p-5 bg-white flex flex-col print-break-inside-avoid">
+                        <div class="border border-slate-200 rounded-2xl p-5 bg-white flex flex-col print-break-inside-avoid shadow-sm hover:shadow-md transition-shadow">
                             <div class="flex items-center gap-4 mb-4">
-                                <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-xl shrink-0 border border-slate-200">
+                                <div class="w-12 h-12 rounded-full bg-slate-100 theme-text flex items-center justify-center text-xl shrink-0 border border-slate-200">
                                     <i class="fas fa-user-circle"></i>
                                 </div>
                                 <div>
                                     <p class="text-[10px] font-bold text-slate-400 uppercase">Tutor / Pengajar</p>
-                                    <h4 class="font-display font-bold text-slate-800 leading-tight">${jenjangPanggilan} ${namaTutor}</h4>
+                                    <h4 class="font-display font-bold text-slate-800 leading-tight">${namaTutor}</h4>
                                 </div>
                             </div>
-                            <div class="bg-slate-100 text-slate-600 text-xs font-bold text-center py-2 rounded-lg mb-4 truncate px-2">
+                            <div class="bg-slate-50 border border-slate-100 text-slate-600 text-xs font-bold text-center py-2 rounded-lg mb-4 truncate px-2">
                                 ${mapelTutor}
                             </div>
                             <div class="mt-auto flex items-center justify-between">
                                 <span class="text-xs font-semibold text-slate-500 font-mono">${noHP ? '+'+noHP : '-'}</span>
-                                <a ${waLink} target="_blank" class="hide-on-print flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[#00bb96] hover:bg-[#00a382] text-white rounded-full text-xs font-bold transition-colors">
+                                <a ${waLink} target="_blank" class="hide-on-print flex items-center justify-center gap-1.5 px-3 py-1.5 theme-bg-grad rounded-full text-xs font-bold transition-transform hover:scale-105 shadow-sm">
                                     <i class="fab fa-whatsapp"></i> Chat
                                 </a>
                             </div>
@@ -974,12 +975,12 @@
                 const sesiRaw = item.sesi || "1";
                 const statusRaw = (item.status_hadir || "").toLowerCase().trim();
                 
+                // Gunakan fungsi pintar
                 if(!isMapelMilikSiswa(mapel)) return;
                 
                 mapel = getSpesifikNamaMapel(mapel);
                 foundSubjects.add(mapel);
 
-                // Format "Pekan 1.1" jika ada sesi dan belum mengandung titik
                 let pekanFix = pekanRaw;
                 if(pekanRaw.toLowerCase().includes("pekan") && !pekanRaw.includes(".")) {
                     let pNum = pekanRaw.replace(/\D/g, '');
@@ -1002,6 +1003,7 @@
                 }
             });
 
+            // Update Statistik Atas
             document.getElementById('stat-hadir').innerText = stats.h;
             document.getElementById('stat-izin').innerText = stats.s_i;
             document.getElementById('stat-alpa').innerText = stats.a;
@@ -1011,18 +1013,17 @@
             container.innerHTML = '';
             
             for (const [mapel, list] of Object.entries(presensiMap)) {
-                // Sorting logic for "Pekan 1.1" style
                 list.sort((a, b) => {
                     const strA = a.pekan.replace(/Pekan\s*/i, ''); 
                     const strB = b.pekan.replace(/Pekan\s*/i, '');
-                    const arrA = strA.split('.');
-                    const arrB = strB.split('.');
+                    const arrA = strA.split('.'); const arrB = strB.split('.');
                     const numA1 = parseInt(arrA[0]) || 0, numA2 = parseInt(arrA[1]) || 0;
                     const numB1 = parseInt(arrB[0]) || 0, numB2 = parseInt(arrB[1]) || 0;
                     if(numA1 !== numB1) return numA1 - numB1;
                     return numA2 - numB2;
                 });
 
+                // Bungkus tabel dengan desain rapi
                 container.innerHTML += `
                     <div class="border border-slate-200 rounded-xl bg-white overflow-hidden shadow-sm h-fit">
                         <div class="bg-slate-50 px-4 py-3 border-b border-slate-200">
@@ -1034,16 +1035,19 @@
                     </div>
                 `;
             }
+            
+            if(Object.keys(presensiMap).length === 0) {
+                 container.innerHTML = '<div class="col-span-full p-8 text-center font-bold text-slate-400">Tidak ada rincian data presensi untuk siswa ini.</div>';
+            }
         }
 
-        // Helper untuk memecah tabel presensi maks 4 kolom per baris
+        // Helper untuk memecah tabel presensi maks 4 kolom per baris agar konsisten
         function renderPresensiTableChunks(list) {
             let html = '';
             const chunkSize = 4;
             for (let i = 0; i < list.length; i += chunkSize) {
                 const chunk = list.slice(i, i + chunkSize);
-                let ths = '';
-                let tds = '';
+                let ths = ''; let tds = '';
                 chunk.forEach(item => {
                     ths += `<th class="p-2 border-b border-r border-slate-200 font-semibold text-slate-500 text-[11px] whitespace-nowrap min-w-[50px] bg-slate-50 w-1/4">${item.pekan}</th>`;
                     let st = item.status;
@@ -1055,7 +1059,7 @@
                 });
                 while(chunk.length < 4 && i+chunkSize >= list.length) {
                     ths += `<th class="p-2 border-b border-r border-slate-200 font-semibold text-slate-500 text-[11px] bg-slate-50 w-1/4"></th>`;
-                    tds += `<td class="p-2 border-r border-slate-200 w-1/4"></td>`;
+                    tds += `<td class="p-2 border-r border-slate-200 w-1/4 bg-slate-50/20"></td>`;
                     chunk.push({}); 
                 }
                 html += `
@@ -1074,7 +1078,7 @@
             containerOrtu.innerHTML = '<p class="text-xs text-slate-400"><i class="fas fa-circle-notch fa-spin"></i> Memuat form...</p>';
             
             try {
-                const { data: dataForm, error: errForm } = await supabaseClient
+                const { data: dataForm } = await supabaseClient
                     .from('nilai_oleh_orang_tua')
                     .select('*')
                     .eq('Jenjang', currentSession.jenjang || "");
@@ -1102,7 +1106,7 @@
                 }
             } catch(e) { containerOrtu.innerHTML = '<p class="text-sm text-red-400">Gagal memuat form.</p>'; }
 
-            // 2. Rekap Nilai Tutor (K1 & K2)
+            // 2. Rekap Nilai Tutor
             const containerTutorK1 = document.getElementById('rekap-tutor-k1-container');
             const containerTutorK2 = document.getElementById('rekap-tutor-k2-container');
             containerTutorK1.innerHTML = '<div class="col-span-full"><p class="text-xs text-slate-400"><i class="fas fa-circle-notch fa-spin"></i> Memuat nilai K1...</p></div>';
@@ -1119,22 +1123,24 @@
                     
                     dataNilai.forEach(item => {
                         let mapel = (item.mapel || "").trim();
-                        let jenjang = (item.Jenjang || "").trim();
-                        let kuartal = (item.periode_kuartal || "").toLowerCase().trim();
+                        let jenjang = (item.Jenjang || "").trim().toLowerCase();
+                        // Handle column name variations (periode_kuarta / periode_kuartal)
+                        let kuartal = (item.periode_kuarta || item.periode_kuartal || "").toLowerCase().trim();
                         
-                        if (currentSession.jenjang && currentSession.jenjang !== "EMPTY" && jenjang !== currentSession.jenjang) return;
+                        const sesiJenjang = (currentSession.jenjang || "").toLowerCase().trim();
+                        if (sesiJenjang && jenjang !== "empty" && !jenjang.includes(sesiJenjang)) return; 
+                        
                         if (!isMapelMilikSiswa(mapel)) return;
                         
                         mapel = getSpesifikNamaMapel(mapel);
-                        // Pakai link_asli
                         let link = item.link_asli && item.link_asli !== "EMPTY" ? item.link_asli : "#";
                         
                         if(link !== "#") {
                             const btnHTML = `
-                                <a href="${link}" target="_blank" class="w-full flex items-center justify-between p-3.5 border border-blue-200 rounded-xl hover:border-blue-400 bg-white hover:bg-blue-50 transition-colors group">
+                                <a href="${link}" target="_blank" class="w-full flex items-center justify-between p-3.5 border border-slate-200 rounded-xl bg-white hover:border-slate-300 transition-all shadow-sm group">
                                     <div class="flex items-center gap-3 overflow-hidden">
-                                        <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 shrink-0"><i class="fas fa-chart-bar text-sm"></i></div>
-                                        <span class="text-sm font-bold text-slate-700 truncate" title="${mapel}">${mapel}</span>
+                                        <div class="w-8 h-8 rounded-lg theme-bg-grad flex items-center justify-center shrink-0"><i class="fas fa-chart-bar text-sm"></i></div>
+                                        <span class="text-sm font-bold text-slate-700 truncate group-hover:text-slate-900" title="${mapel}">${mapel}</span>
                                     </div>
                                     <i class="fas fa-external-link-alt text-xs text-slate-300 shrink-0"></i>
                                 </a>
@@ -1164,7 +1170,6 @@
             const containerK2 = document.getElementById('dokumen-k2-container');
             containerK1.innerHTML = ''; containerK2.innerHTML = '';
             
-            // Gabungkan mapel dari official & found
             let combinedMapel = new Set([...officialSubjects, ...foundSubjects]);
             let mapelArray = Array.from(combinedMapel).map(m => getSpesifikNamaMapel(m)).filter(m => m && m.length > 2 && m !== "Umum" && m !== "EMPTY" && m !== "-");
             mapelArray = [...new Set(mapelArray)];
@@ -1176,22 +1181,24 @@
             }
 
             mapelArray.sort().forEach(mapel => {
-                // Untuk simulasi ini, K1 ada link (true), K2 tidak ada (false)
-                let isTersediaK1 = true; 
-                let isTersediaK2 = false; 
+                // Di sistem nyata ini akan dicek ke database.
+                // Jika tidak ada link yang dikembalikan, kita set flag false untuk memunculkan "Belum Tersedia"
+                let isTersediaK1 = true; // Contoh: K1 ada isinya
+                let isTersediaK2 = false; // Contoh: K2 belum ada isinya (Belum Tersedia)
                 
+                // Note: Instruksi meminta jika belum ada, pastikan tulisannya "Belum Tersedia" dengan jelas.
                 const buildBtn = (isAvail) => {
                     if (isAvail) {
-                         return `<button onclick="showToast('Mengunduh dokumen: ${mapel}')" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-xs font-bold text-white transition-colors"><i class="fas fa-download"></i> Download</button>`;
+                         return `<button onclick="showToast('Mengunduh dokumen: ${mapel}')" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 theme-bg-grad rounded-xl text-xs font-bold transition-transform hover:scale-[1.02]"><i class="fas fa-download"></i> Download</button>`;
                     } else {
-                         return `<button disabled class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-50 hover:bg-slate-100 rounded-xl text-xs font-bold text-slate-400 transition-colors border border-slate-200"><i class="fas fa-lock"></i> Belum Tersedia</button>`;
+                         return `<button disabled class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-50 text-slate-400 rounded-xl text-xs font-bold cursor-not-allowed border border-slate-200"><i class="fas fa-lock"></i> Belum Tersedia</button>`;
                     }
                 };
 
                 const buildCard = (isAvail) => `
-                    <div class="border border-slate-200 rounded-2xl p-5 bg-white hover:border-slate-300 transition-all flex flex-col h-full">
+                    <div class="border border-slate-200 rounded-2xl p-5 bg-white hover:border-slate-300 transition-all flex flex-col h-full shadow-sm">
                         <div class="flex items-center gap-3 mb-5">
-                            <div class="w-10 h-10 rounded-xl ${isAvail ? 'bg-indigo-50 text-indigo-500' : 'bg-slate-50 text-slate-400'} flex items-center justify-center text-lg shrink-0">
+                            <div class="w-10 h-10 rounded-xl ${isAvail ? 'theme-text bg-slate-100 border border-slate-200' : 'bg-slate-50 text-slate-400'} flex items-center justify-center text-lg shrink-0">
                                 <i class="fas fa-file-pdf"></i>
                             </div>
                             <h3 class="font-bold text-sm text-slate-800 leading-tight line-clamp-2">${mapel}</h3>
@@ -1217,7 +1224,6 @@
             const wasKalenderHidden = btnKalender.classList.contains('hidden');
             
             if(!wasKalenderHidden) btnKalender.classList.add('hidden');
-            
             btn.style.visibility = 'hidden';
 
             setTimeout(() => {
@@ -1227,7 +1233,7 @@
                     image:        { type: 'jpeg', quality: 0.98 },
                     html2canvas:  { scale: 2, useCORS: true, windowWidth: 1200 }, 
                     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' },
-                    pagebreak:    { mode: 'avoid-all', before: '#tutor-section' } // Mencegah terpotong
+                    pagebreak:    { mode: 'avoid-all', before: '#tutor-section' } 
                 };
 
                 html2pdf().set(opt).from(element).save().then(() => {
