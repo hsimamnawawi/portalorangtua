@@ -720,58 +720,54 @@
             if (jClean && jClean.toLowerCase() !== "umum" && jClean !== "EMPTY") {
                 const { data: dataJurusan } = await supabaseClient.from('mapel_jurusan').select('nama_mapel').eq('jurusan', jClean);
                 if (dataJurusan) dataJurusan.forEach(item => {
-                    const mp = (item.nama_mapel || "").trim();
+                    const mp = item.nama_mapel.trim();
                     if(mp && mp !== "-") officialSubjects.add(mp);
                 });
             }
         }
 
-        /**
-         * FUNGSI FILTER KETAT: Memastikan mapel DB (misal dari tabel jadwal/rekap)
-         * BENAR-BENAR milik siswa (berdasarkan kelas dan daftar resmi).
-         */
         function isMapelMilikSiswa(namaMapelDicek) {
             if(!namaMapelDicek || namaMapelDicek === "EMPTY" || namaMapelDicek === "-") return false;
             
             let mDicekLower = namaMapelDicek.toLowerCase().trim();
-            let kelasLower = (currentSession.kelas || "").toLowerCase().replace("kelas ", "").trim(); // misal "10.a"
+            const kelasLower = (currentSession.kelas || "").replace("Kelas ", "").toLowerCase().trim();
 
-            // 1. FILTER CEGAH KELAS NYASAR:
-            // Jika nama mapelDb mengandung kode kelas (contoh: "MTK 10.B"), tolak jika bukan kelas anak!
+            // 1. PRIORITAS UTAMA: Cocokkan dengan Daftar Resmi (PAI, B.Arab, Lit Islam spesifik dll)
+            // Dijalankan LEBIH DULU agar nama mapel seperti "I'dad 1-2.A" atau "Tematik 01-04.A" 
+            // tidak salah diblokir oleh regex kelas di langkah selanjutnya.
+            let mapelResmiLower = Array.from(officialSubjects).map(m => m.toLowerCase().trim());
+            for (let mResmi of mapelResmiLower) {
+                let mapelResmiClean = mResmi.replace(/[^a-z0-9]/g, '');
+                let mDicekClean = mDicekLower.replace(/[^a-z0-9]/g, '');
+                
+                if (mDicekClean === mapelResmiClean) return true;
+                if (mDicekClean.length > 4 && mapelResmiClean.length > 4) {
+                    if (mDicekClean.includes(mapelResmiClean) || mapelResmiClean.includes(mDicekClean)) return true;
+                }
+            }
+
+            // 2. ATURAN PEMBLOKIR: Cegah kelas lain masuk (misal MTK 10.B ditolak untuk siswa 10.A)
             let matchKelasDb = mDicekLower.match(/\d{1,2}\.[a-z]/i); 
             if (matchKelasDb) {
-                let kelasDb = matchKelasDb[0]; // e.g. "10.b"
-                // Tolak jika string kelasDb tidak ada di kelas anak dan sebaliknya
+                let kelasDb = matchKelasDb[0]; 
                 if (kelasLower && !kelasLower.includes(kelasDb) && !kelasDb.includes(kelasLower)) {
                     return false; 
                 }
             }
+            
+            // 3. FALLBACK TERAKHIR: Jika nama mapel setidaknya mengandung nama kelas anak
+            if (kelasLower && mDicekLower.includes(kelasLower)) return true;
 
-            // 2. FILTER KECOCOKAN DENGAN DAFTAR RESMI
-            let mapelResmiLower = Array.from(officialSubjects).map(m => m.toLowerCase().trim());
-            for (let mResmi of mapelResmiLower) {
-                if (mDicekLower === mResmi) return true;
-                
-                // Bila saling mengandung string
-                if (mDicekLower.includes(mResmi) || mResmi.includes(mDicekLower)) return true;
-                
-                // Fallback untuk Sinonim Penamaan Mapel Umum (Database vs Mapel Kelas)
-                if ((mDicekLower.includes("indo") && mResmi.includes("indo")) ||
-                    (mDicekLower.includes("inggris") && mResmi.includes("inggris")) ||
-                    (mDicekLower.includes("mtk") && mResmi.includes("matematika")) ||
-                    (mDicekLower.includes("matematika") && mResmi.includes("mtk")) ||
-                    (mDicekLower.includes("ipa") && mResmi.includes("ipa")) ||
-                    (mDicekLower.includes("ips") && mResmi.includes("ips")) ||
-                    (mDicekLower.includes("pkn") && mResmi.includes("pkn")) ||
-                    (mDicekLower.includes("pjok") && mResmi.includes("olahraga"))) {
-                    return true;
-                }
+            // 4. FALLBACK MAPEL GENERIK: Amankan nama dasar jika tertulis generik di DB
+            if (mDicekLower.includes('pai') || mDicekLower.includes('arab') || mDicekLower.includes('literasi islam')) {
+                return true; 
             }
+
             return false;
         }
 
         function getSpesifikNamaMapel(namaGeneric) {
-            let n = (namaGeneric || "").toLowerCase();
+            let n = namaGeneric.toLowerCase();
             const pai = (currentSession.pai || "").trim();
             const bArab = (currentSession.b_arab || "").trim();
             const litIslam = (currentSession.lit_islam || "").trim();
