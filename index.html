@@ -60,6 +60,10 @@
             .print-break-inside-avoid { break-inside: avoid; }
             #tab-jadwal { margin: 0; padding: 0; }
             body { background: white; }
+            /* Memastikan PDF tidak terpotong */
+            .overflow-x-auto { overflow: visible !important; }
+            table { width: 100% !important; table-layout: fixed; }
+            th, td { word-wrap: break-word; white-space: normal !important; }
         }
         
         html { scroll-behavior: smooth; }
@@ -173,21 +177,20 @@
                 <button onclick="switchTab('jadwal'); document.getElementById('tab-jadwal').scrollIntoView();" id="nav-jadwal" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-300 font-semibold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left">
                     <i class="fas fa-calendar-alt w-5 text-center text-base opacity-90"></i> Jadwal Kelas Online
                 </button>
-                <!-- Tombol Tutor kini hanya scroll di dalam halaman Jadwal -->
                 <button onclick="switchTab('jadwal'); setTimeout(() => document.getElementById('tutor-section').scrollIntoView({behavior: 'smooth', block: 'start'}), 100);" id="nav-tutor" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-300 font-semibold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left">
-                    <i class="fas fa-chalkboard-teacher w-5 text-center text-base opacity-90"></i> Tutor & Kontak
+                    <i class="fas fa-users w-5 text-center text-base opacity-90"></i> Tutor & Kontak
                 </button>
                 <button onclick="switchTab('presensi')" id="nav-presensi" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-300 font-semibold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left">
-                    <i class="fas fa-user-check w-5 text-center text-base opacity-90"></i> Kehadiran Siswa
+                    <i class="fas fa-clipboard-check w-5 text-center text-base opacity-90"></i> Kehadiran Siswa
                 </button>
                 <button onclick="switchTab('dokumen')" id="nav-dokumen" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-300 font-semibold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left">
-                    <i class="fas fa-folder-open w-5 text-center text-base opacity-90"></i> Dokumen Ujian
+                    <i class="fas fa-file-alt w-5 text-center text-base opacity-90"></i> Dokumen Ujian
                 </button>
                 <button onclick="switchTab('rekap')" id="nav-rekap" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-300 font-semibold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left">
-                    <i class="fas fa-chart-bar w-5 text-center text-base opacity-90"></i> Rekap Nilai
+                    <i class="fas fa-chart-line w-5 text-center text-base opacity-90"></i> Rekap Nilai
                 </button>
                 <button onclick="switchTab('pengaturan')" id="nav-pengaturan" class="nav-btn w-full flex items-center gap-3 px-4 py-3 text-slate-300 font-semibold rounded-xl text-sm transition-all hover:bg-white/10 hover:text-white text-left">
-                    <i class="fas fa-shield-alt w-5 text-center text-base opacity-90"></i> Keamanan Akun
+                    <i class="fas fa-lock w-5 text-center text-base opacity-90"></i> Keamanan Akun
                 </button>
             </nav>
             
@@ -199,15 +202,15 @@
         </aside>
 
         <!-- Main Content Area -->
-        <main class="flex-1 p-4 md:p-8 md:ml-64 w-full max-w-[1400px] mx-auto overflow-x-hidden min-h-screen flex flex-col">
+        <main class="flex-1 p-4 md:p-8 md:ml-64 w-full xl:max-w-6xl mx-auto overflow-x-hidden min-h-screen flex flex-col">
             
             <!-- Header Info Siswa -->
             <div class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden mb-6 hide-on-print">
                 <div id="header-accent-bar" class="absolute top-0 left-0 w-2 h-full transition-colors duration-500"></div>
                 
                 <div class="flex items-center gap-4 pl-4">
-                    <div id="user-avatar-box" class="w-14 h-14 rounded-full bg-slate-50 text-slate-400 border-2 border-slate-100 flex items-center justify-center text-2xl shrink-0 shadow-sm transition-colors duration-500">
-                        <i class="fas fa-user-graduate"></i>
+                    <div id="user-avatar-box" class="w-14 h-14 bg-slate-50 text-slate-400 border-2 border-slate-100 flex items-center justify-center shrink-0 shadow-sm transition-colors duration-500 p-2 rounded-xl">
+                        <img src="Logo HSIN tanpa teks.png" alt="HSIN" class="w-full h-full object-contain" onerror="this.src='https://i.ibb.co.com/p6X7DYnr/Logo-HSIN.png'">
                     </div>
                     <div>
                         <p class="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-0.5">Data Siswa Aktif</p>
@@ -252,7 +255,7 @@
                             <table class="w-full text-sm border-collapse">
                                 <thead id="table-jadwal-head" class="bg-[#00bb96] text-white transition-colors duration-500">
                                     <tr>
-                                        <th class="p-4 font-semibold text-center whitespace-nowrap w-32 border-r border-white/20">Waktu</th>
+                                        <th class="p-4 font-semibold text-center whitespace-normal break-words w-24 md:w-32 border-r border-white/20">Waktu</th>
                                         <th class="p-4 font-semibold text-center border-r border-white/20">Senin</th>
                                         <th class="p-4 font-semibold text-center border-r border-white/20">Selasa</th>
                                         <th class="p-4 font-semibold text-center border-r border-white/20">Rabu</th>
@@ -384,8 +387,16 @@
                         <p class="text-sm text-slate-500 mt-1">Akses soal ujian PDF (GDrive) sesuai dengan mata pelajaran siswa.</p>
                     </div>
                     <div class="p-6 bg-slate-50/30">
-                        <div id="dokumen-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                            <!-- Tombol Ujian -->
+                        <!-- Kuartal 1 -->
+                        <h3 class="font-display font-bold text-lg text-slate-700 mb-4 border-l-4 border-indigo-500 pl-3">Kuartal 1</h3>
+                        <div id="dokumen-k1-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
+                            <!-- Tombol Ujian K1 -->
+                        </div>
+
+                        <!-- Kuartal 2 -->
+                        <h3 class="font-display font-bold text-lg text-slate-700 mb-4 border-l-4 border-indigo-500 pl-3">Kuartal 2</h3>
+                        <div id="dokumen-k2-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                            <!-- Tombol Ujian K2 -->
                         </div>
                     </div>
                 </div>
@@ -398,11 +409,11 @@
                     <!-- Bagian 1: Form Input Orang Tua -->
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                         <div class="px-6 py-5 border-b border-slate-100 bg-amber-50">
-                            <h2 id="judul-form-ortu" class="font-display font-bold text-lg text-slate-800 flex items-center gap-2 uppercase"><i class="fas fa-edit text-amber-500"></i> FORM NILAI PEKANAN, ADAB, OLAHRAGA DAN CATATAN DARI ORANG TUA</h2>
+                            <h2 id="judul-form-ortu" class="font-display font-bold text-lg text-slate-800 flex items-center gap-2 uppercase"><i class="fas fa-edit text-amber-500"></i> Form Nilai Pekanan, Adab, Olahraga & Catatan dari Orang Tua</h2>
                         </div>
                         <div class="p-6">
                             <p class="text-sm text-slate-700 mb-3 leading-relaxed">
-                                <strong class="font-bold">Sebagai bagian dari sistem evaluasi terpadu</strong> antara sekolah dan rumah, kami mohon kesediaan Ayah/Bunda untuk mengisi Form Nilai Pekanan, Adab, Olahraga dan Catatan dari Orang Tua <strong class="font-bold">terhadap perkembangan Ananda selama belajar di HSIN pada Kuartal ini</strong>, mohon bantuan Ayah/Bunda sekalian untuk dapat mengisi form ini dengan benar dan jujur.
+                                <strong class="font-bold">Sebagai bagian dari sistem evaluasi terpadu</strong> antara sekolah dan rumah, kami mohon kesediaan Ayah/Bunda untuk mengisi <span class="font-bold italic">Form Nilai Pekanan, Adab, Olahraga dan Catatan dari Orang Tua</span> terhadap perkembangan Ananda selama belajar di HSIN pada Kuartal ini, mohon bantuan Ayah/Bunda sekalian untuk dapat mengisi form ini dengan benar dan jujur.
                             </p>
                             <p class="text-sm text-slate-700 italic mb-5">
                                 Semoga Allah memberikan kemudahan dan kelancaran kepada kita semuanya, Aamiin ya Rabbal Alamiin.
@@ -416,13 +427,20 @@
                     <!-- Bagian 2: Dokumen Rekap Asli HSIN -->
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                         <div class="px-6 py-5 border-b border-slate-100 bg-blue-50">
-                            <h2 class="font-display font-bold text-lg text-slate-800 flex items-center gap-2"><i class="fas fa-chart-line text-blue-500"></i> Laporan Nilai Akademik (Tutor)</h2>
+                            <h2 class="font-display font-bold text-lg text-slate-800 flex items-center gap-2"><i class="fas fa-chart-line text-blue-500"></i> Rekap Nilai per Mata Pelajaran</h2>
                             <p class="text-sm text-slate-600 mt-1">Akses rekapitulasi nilai resmi dari Tutor HSIN per mata pelajaran.</p>
                         </div>
                         <div class="p-6 bg-slate-50/50">
-                            <!-- Grid responsif agar tombol tidak tersembunyi scroll -->
-                            <div id="rekap-tutor-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                <!-- Tombol Nilai Asli -->
+                            <!-- Kuartal 1 -->
+                            <h3 class="font-display font-bold text-md text-slate-700 mb-3 border-l-4 border-blue-500 pl-3">Kuartal 1</h3>
+                            <div id="rekap-tutor-k1-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-6">
+                                <!-- Tombol Nilai Asli K1 -->
+                            </div>
+
+                            <!-- Kuartal 2 -->
+                            <h3 class="font-display font-bold text-md text-slate-700 mb-3 border-l-4 border-blue-500 pl-3">Kuartal 2</h3>
+                            <div id="rekap-tutor-k2-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+                                <!-- Tombol Nilai Asli K2 -->
                             </div>
                         </div>
                     </div>
@@ -762,9 +780,6 @@
             document.getElementById('print-nama-siswa').innerText = currentSession.nama_lengkap;
             document.getElementById('print-kelas-siswa').innerText = txtKelas;
             
-            // Atur Judul Form Rekap Nilai Ortu
-            document.getElementById('judul-form-ortu').innerHTML = `<i class="fas fa-edit text-amber-500"></i> FORM NILAI PEKANAN, ADAB, OLAHRAGA DAN CATATAN DARI ORANG TUA HSIN ${currentSession.jenjang || ""}`;
-
             // Panggilan Wali Kelas (Ustadz/Ustadzah)
             const wNama = (currentSession.wali_kelas && currentSession.wali_kelas !== "EMPTY") ? currentSession.wali_kelas : "Admin Sekolah";
             const jenjangLower = (currentSession.jenjang || "").toLowerCase();
@@ -777,7 +792,7 @@
             
             // Format WhatsApp Link Wali Kelas (Kosongi atau beri wa default jika tidak ada)
             const waDefault = "6281234567890"; // Dummy
-            document.getElementById('wali-wa').href = `https://wa.me/${waDefault}?text=Assalamu'alaikum,%20${panggilan.replace('WALI KELAS, ', '')}%20${wNama},%20saya%20wali%20dari%20${currentSession.nama_lengkap}`;
+            document.getElementById('wali-wa').href = `https://wa.me/${waDefault}?text=Assalamu'alaikum,%20${panggilan.replace('WALI KELAS, ', '')}%20${encodeURIComponent(wNama)},%20saya%20wali%20dari%20${encodeURIComponent(currentSession.nama_lengkap)}`;
         }
 
         async function loadKalender() {
@@ -825,8 +840,6 @@
                 mapelAsli = getSpesifikNamaMapel(mapelAsli);
                 foundSubjects.add(mapelAsli);
 
-                if(hari.includes('sabtu')) adaSabtu = true;
-
                 const timeKey = jSelesai ? `${jMulai} - ${jSelesai}` : jMulai;
                 if (!jadwalMap.has(timeKey)) {
                     jadwalMap.set(timeKey, { jam: timeKey, senin: "—", selasa: "—", rabu: "—", kamis: "—", jumat: "—", sabtu: "—", sortKey: jMulai });
@@ -843,6 +856,11 @@
                 }
             });
 
+            // Cek apakah ada jadwal di hari sabtu setelah difilter mapelnya
+            Array.from(jadwalMap.values()).forEach(item => {
+                if(item.sabtu !== "—") adaSabtu = true;
+            });
+
             // Tampilkan/Sembunyikan kolom Sabtu
             const thSabtu = document.getElementById('th-sabtu');
             if(adaSabtu) thSabtu.classList.remove('hidden');
@@ -857,15 +875,15 @@
             }
 
             sortedJadwal.forEach(item => {
-                let sabtuHTML = adaSabtu ? `<td class="p-4 font-semibold text-slate-600 leading-snug">${item.sabtu}</td>` : "";
+                let sabtuHTML = adaSabtu ? `<td class="p-4 font-semibold text-slate-600 leading-snug whitespace-normal">${item.sabtu}</td>` : "";
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50 transition-colors border-b border-slate-100 last:border-0 text-center print-break-inside-avoid">
-                        <td class="p-4 font-bold text-slate-700 whitespace-nowrap bg-slate-50/50 text-left">${item.jam}</td>
-                        <td class="p-4 font-semibold text-slate-600 leading-snug">${item.senin}</td>
-                        <td class="p-4 font-semibold text-slate-600 leading-snug">${item.selasa}</td>
-                        <td class="p-4 font-semibold text-slate-600 leading-snug">${item.rabu}</td>
-                        <td class="p-4 font-semibold text-slate-600 leading-snug">${item.kamis}</td>
-                        <td class="p-4 font-semibold text-slate-600 leading-snug">${item.jumat}</td>
+                        <td class="p-4 font-bold text-slate-700 bg-slate-50/50 text-left whitespace-normal break-words w-24 md:w-32">${item.jam}</td>
+                        <td class="p-4 font-semibold text-slate-600 leading-snug whitespace-normal">${item.senin}</td>
+                        <td class="p-4 font-semibold text-slate-600 leading-snug whitespace-normal">${item.selasa}</td>
+                        <td class="p-4 font-semibold text-slate-600 leading-snug whitespace-normal">${item.rabu}</td>
+                        <td class="p-4 font-semibold text-slate-600 leading-snug whitespace-normal">${item.kamis}</td>
+                        <td class="p-4 font-semibold text-slate-600 leading-snug whitespace-normal">${item.jumat}</td>
                         ${sabtuHTML}
                     </tr>`;
             });
@@ -896,10 +914,7 @@
                 if (!tutorDitampilkan.has(uniqueKey) && namaTutor !== "EMPTY" && namaTutor !== "-") {
                     tutorDitampilkan.add(uniqueKey);
                     
-                    let noHP = (tutor.no_hp || "").replace(/\D/g, '');
-                    if (noHP.startsWith('0')) noHP = '62' + noHP.substring(1);
-                    
-                    let waLink = noHP ? `href="https://wa.me/${noHP}?text=Assalamu'alaikum,%20Ustadz/ah%20${encodeURIComponent(namaTutor)},%20saya%20wali%20dari%20${encodeURIComponent(currentSession.nama_lengkap)}"` : 'href="#" onclick="showToast(\'Nomor WA Tutor belum tersedia.\'); return false;"';
+                    let waLink = noHP ? `href="https://wa.me/${noHP}?text=Assalamu'alaikum,%20${jenjangPanggilan}%20${encodeURIComponent(namaTutor)},%20saya%20wali%20dari%20${encodeURIComponent(currentSession.nama_lengkap)}"` : 'href="#" onclick="showToast(\'Nomor WA Tutor belum tersedia.\'); return false;"';
 
                     container.innerHTML += `
                         <div class="border border-slate-200 rounded-2xl p-5 bg-white flex flex-col print-break-inside-avoid">
@@ -909,7 +924,7 @@
                                 </div>
                                 <div>
                                     <p class="text-[10px] font-bold text-slate-400 uppercase">Tutor / Pengajar</p>
-                                    <h4 class="font-display font-bold text-slate-800 leading-tight">${namaTutor}</h4>
+                                    <h4 class="font-display font-bold text-slate-800 leading-tight">${jenjangPanggilan} ${namaTutor}</h4>
                                 </div>
                             </div>
                             <div class="bg-slate-100 text-slate-600 text-xs font-bold text-center py-2 rounded-lg mb-4 truncate px-2">
@@ -926,23 +941,6 @@
                 }
             });
             
-            if (tutorDitampilkan.size === 0) container.innerHTML = '<div class="col-span-full p-8 text-center font-bold text-slate-400">Belum ada profil tutor untuk kelas ini.</div>';
-        }
-
-        async function loadPresensiData() {
-            const container = document.getElementById('presensi-container');
-            container.innerHTML = '<div class="col-span-full p-8 text-center font-bold text-slate-400">Menarik rekam kehadiran...</div>';
-            
-            const { data, error } = await supabaseClient
-                .from('presensi_flat')
-                .select('*')
-                .ilike('nama_siswa', currentSession.nama_lengkap);
-
-            if (error || !data || data.length === 0) {
-                container.innerHTML = '<div class="col-span-full p-8 text-center font-bold text-slate-400">Belum ada rekam jejak kehadiran untuk siswa ini.</div>';
-                return;
-            }
-
             const presensiMap = {};
             let stats = { h: 0, s_i: 0, a: 0, total: 0 };
 
@@ -959,6 +957,7 @@
 
                 let pekanFix = pekanRaw;
                 // Jika pekan belum mengandung ".", tambahkan sesi (Pekan 1 -> Pekan 1.1)
+                // Filter cerdas: hindari menambahkan .1 jika sudah ada
                 if(pekanRaw.toLowerCase().includes("pekan") && !pekanRaw.includes(".")) {
                     let pNum = pekanRaw.replace(/\D/g, '');
                     if(pNum) pekanFix = `Pekan ${pNum}.${sesiRaw}`;
@@ -972,7 +971,16 @@
                 if(stFormatted !== "-") stats.total++;
 
                 if (!presensiMap[mapel]) presensiMap[mapel] = [];
-                presensiMap[mapel].push({ pekan: pekanFix, status: stFormatted });
+                // Cek agar tidak duplikat pekan yang sama pada mapel yang sama
+                const existingPekanIdx = presensiMap[mapel].findIndex(p => p.pekan === pekanFix);
+                if(existingPekanIdx === -1) {
+                    presensiMap[mapel].push({ pekan: pekanFix, status: stFormatted });
+                } else {
+                    // Update dengan data terbaru jika status sebelumnya kosong/salah
+                    if(presensiMap[mapel][existingPekanIdx].status === "-") {
+                        presensiMap[mapel][existingPekanIdx].status = stFormatted;
+                    }
+                }
             });
 
             // Update Statistik
@@ -998,10 +1006,17 @@
                     return numA2 - numB2;
                 });
 
+                // Maksimal 8 pekan
+                const maxPekan = 8;
+                let processedList = list;
+                
+                // Jika ingin membatasi hanya menampilkan 8 data per tabel/baris
+                // (Meskipun list.length > 8, kita batasi tampilan)
+                
                 let thHTML = '';
                 let tdHTML = '';
                 
-                list.forEach(item => {
+                processedList.forEach(item => {
                     thHTML += `<th class="p-2 border-b border-r border-slate-200 font-semibold text-slate-500 text-[11px] whitespace-nowrap min-w-[50px] bg-slate-50">${item.pekan}</th>`;
                     
                     let st = item.status;
@@ -1019,14 +1034,47 @@
                             <h3 class="font-bold text-slate-800 text-sm truncate" title="${mapel}">${mapel}</h3>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-center border-collapse">
-                                <thead><tr>${thHTML}</tr></thead>
-                                <tbody><tr>${tdHTML}</tr></tbody>
-                            </table>
+                            <!-- Tabel dibungkus grid-cols-4 utk force max 4 column, lalu wrap.
+                                 Pendekatan CSS murni: pecah array list menjadi chunk ukuran 4 -->
+                            ${renderPresensiTableChunks(processedList)}
                         </div>
                     </div>
                 `;
             }
+        }
+
+        // Helper untuk memecah tabel presensi per 4 kolom
+        function renderPresensiTableChunks(list) {
+            let html = '';
+            const chunkSize = 4;
+            for (let i = 0; i < list.length; i += chunkSize) {
+                const chunk = list.slice(i, i + chunkSize);
+                let ths = '';
+                let tds = '';
+                chunk.forEach(item => {
+                    ths += `<th class="p-2 border-b border-r border-slate-200 font-semibold text-slate-500 text-[11px] whitespace-nowrap min-w-[50px] bg-slate-50 w-1/4">${item.pekan}</th>`;
+                    let st = item.status;
+                    let textClass = "text-slate-600";
+                    if (st === 'H') textClass = "text-emerald-600 font-bold bg-emerald-50/50";
+                    else if (st === 'A') textClass = "text-red-600 font-bold bg-red-50/50";
+                    else if (st === 'S' || st === 'I') textClass = "text-amber-600 font-bold bg-amber-50/50";
+                    tds += `<td class="p-2 border-r border-slate-200 text-center text-[13px] ${textClass} w-1/4">${st}</td>`;
+                });
+                // Pad sisa kolom jika < 4 agar tabel tetap rapi (optional)
+                while(chunk.length < 4 && i+chunkSize >= list.length) {
+                    ths += `<th class="p-2 border-b border-r border-slate-200 font-semibold text-slate-500 text-[11px] bg-slate-50 w-1/4"></th>`;
+                    tds += `<td class="p-2 border-r border-slate-200 w-1/4"></td>`;
+                    chunk.push({}); // dummy
+                }
+
+                html += `
+                    <table class="w-full text-center border-collapse table-fixed ${i > 0 ? 'border-t border-slate-200' : ''}">
+                        <thead><tr>${ths}</tr></thead>
+                        <tbody><tr>${tds}</tr></tbody>
+                    </table>
+                `;
+            }
+            return html;
         }
 
         async function loadRekapNilai() {
@@ -1064,44 +1112,77 @@
             } catch(e) { containerOrtu.innerHTML = '<p class="text-sm text-red-400">Gagal memuat form.</p>'; }
 
             // 2. Load Laporan Nilai Akademik
-            const containerTutor = document.getElementById('rekap-tutor-container');
-            containerTutor.innerHTML = '<div class="col-span-full"><p class="text-xs text-slate-400"><i class="fas fa-circle-notch fa-spin"></i> Memuat nilai...</p></div>';
+            const containerTutorK1 = document.getElementById('rekap-tutor-k1-container');
+            const containerTutorK2 = document.getElementById('rekap-tutor-k2-container');
+            containerTutorK1.innerHTML = '<div class="col-span-full"><p class="text-xs text-slate-400"><i class="fas fa-circle-notch fa-spin"></i> Memuat nilai K1...</p></div>';
+            containerTutorK2.innerHTML = '<div class="col-span-full"><p class="text-xs text-slate-400"><i class="fas fa-circle-notch fa-spin"></i> Memuat nilai K2...</p></div>';
             
             try {
-                const { data: dataNilai } = await supabaseClient.from('rekap_nilai_flat').select('*');
+                // Fetch khusus dari tabel rekap_nilai_flat sesuai gambar
+                const { data: dataNilai, error } = await supabaseClient.from('rekap_nilai_flat').select('*');
+                
+                if(error) throw error;
+
                 if(dataNilai && dataNilai.length > 0) {
-                    containerTutor.innerHTML = '';
-                    let rendered = 0;
+                    containerTutorK1.innerHTML = '';
+                    containerTutorK2.innerHTML = '';
+                    let renderedK1 = 0;
+                    let renderedK2 = 0;
+                    
                     dataNilai.forEach(item => {
                         let mapel = (item.mapel || "").trim();
+                        let jenjang = (item.Jenjang || "").trim();
+                        let kuartal = (item.periode_kuartal || "").toLowerCase().trim();
+                        
+                        // Filter by Jenjang
+                        if (currentSession.jenjang && currentSession.jenjang !== "EMPTY" && jenjang !== currentSession.jenjang) return;
+                        
                         if (!isMapelMilikSiswa(mapel)) return;
                         
                         mapel = getSpesifikNamaMapel(mapel);
                         
-                        let link = item.link_asli || item.link_singkat || "#";
-                        if(link !== "EMPTY" && link !== "#") {
-                            rendered++;
-                            containerTutor.innerHTML += `
+                        let link = item.link_singkat && item.link_singkat !== "EMPTY" ? item.link_singkat : (item.link_asli && item.link_asli !== "EMPTY" ? item.link_asli : "#");
+                        
+                        if(link !== "#") {
+                            const btnHTML = `
                                 <a href="${link}" target="_blank" class="w-full flex items-center justify-between p-3.5 border border-blue-200 rounded-xl hover:border-blue-400 bg-white hover:bg-blue-50 transition-colors group">
                                     <div class="flex items-center gap-3 overflow-hidden">
                                         <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 shrink-0"><i class="fas fa-chart-bar text-sm"></i></div>
-                                        <span class="text-sm font-bold text-slate-700 truncate">${mapel}</span>
+                                        <span class="text-sm font-bold text-slate-700 truncate" title="${mapel}">${mapel}</span>
                                     </div>
                                     <i class="fas fa-chevron-right text-xs text-slate-300 shrink-0"></i>
                                 </a>
                             `;
+
+                            if(kuartal.includes('1')) {
+                                containerTutorK1.innerHTML += btnHTML;
+                                renderedK1++;
+                            } else if(kuartal.includes('2')) {
+                                containerTutorK2.innerHTML += btnHTML;
+                                renderedK2++;
+                            }
                         }
                     });
-                    if(rendered === 0) containerTutor.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg">Data nilai belum tersedia untuk mapel Ananda.</p></div>';
+
+                    if(renderedK1 === 0) containerTutorK1.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg border border-slate-100">Data nilai K1 belum tersedia untuk mapel Ananda.</p></div>';
+                    if(renderedK2 === 0) containerTutorK2.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg border border-slate-100">Data nilai K2 belum tersedia untuk mapel Ananda.</p></div>';
+                    
                 } else {
-                     containerTutor.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg">Data nilai belum tersedia.</p></div>';
+                     containerTutorK1.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg">Data nilai belum tersedia.</p></div>';
+                     containerTutorK2.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg">Data nilai belum tersedia.</p></div>';
                 }
-            } catch(e) { containerTutor.innerHTML = '<div class="col-span-full"><p class="text-sm text-red-400">Gagal memuat rekap nilai.</p></div>'; }
+            } catch(e) { 
+                console.error("Gagal load rekap", e);
+                containerTutorK1.innerHTML = '<div class="col-span-full"><p class="text-sm text-red-400">Gagal memuat rekap nilai.</p></div>'; 
+                containerTutorK2.innerHTML = '<div class="col-span-full"><p class="text-sm text-red-400">Gagal memuat rekap nilai.</p></div>'; 
+            }
         }
 
         function renderDokumenUjian() {
-            const container = document.getElementById('dokumen-container');
-            container.innerHTML = '';
+            const containerK1 = document.getElementById('dokumen-k1-container');
+            const containerK2 = document.getElementById('dokumen-k2-container');
+            containerK1.innerHTML = '';
+            containerK2.innerHTML = '';
             
             // Gabungkan mapel dari master dan yang ditemukan
             let combinedMapel = new Set([...officialSubjects, ...foundSubjects]);
@@ -1109,26 +1190,34 @@
             mapelArray = [...new Set(mapelArray)];
 
             if(mapelArray.length === 0) {
-                container.innerHTML = '<div class="col-span-full p-8 text-center font-bold text-slate-400">Belum ada dokumen mata pelajaran terdaftar.</div>';
+                containerK1.innerHTML = '<div class="col-span-full p-4 text-center font-bold text-slate-400">Belum ada dokumen mata pelajaran terdaftar.</div>';
+                containerK2.innerHTML = '<div class="col-span-full p-4 text-center font-bold text-slate-400">Belum ada dokumen mata pelajaran terdaftar.</div>';
                 return;
             }
 
             mapelArray.sort().forEach(mapel => {
                 // Simulasi Cek Ketersediaan Dokumen (Dalam praktek nyata, harus narik dari tabel khusus ujian)
-                // Karena di struktur saat ini tidak ada tabel 'ujian_flat', saya buatkan UX state "Belum Tersedia"
-                let isTersedia = false; // Ganti ini jika sudah ada tabel dokumen
-                let btnHTML = '';
+                let isTersediaK1 = false; // Ganti ini jika sudah ada tabel dokumen
+                let isTersediaK2 = false; 
                 
-                if (isTersedia) {
-                     btnHTML = `<button onclick="showToast('Mengunduh soal untuk: ${mapel}')" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-xs font-bold text-white transition-colors"><i class="fas fa-download"></i> Download</button>`;
+                let btnHTML_K1 = '';
+                if (isTersediaK1) {
+                     btnHTML_K1 = `<button onclick="showToast('Mengunduh soal untuk: ${mapel}')" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-xs font-bold text-white transition-colors"><i class="fas fa-download"></i> Download</button>`;
                 } else {
-                     btnHTML = `<button disabled class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-100 rounded-xl text-xs font-bold text-slate-400 cursor-not-allowed border border-slate-200"><i class="fas fa-lock"></i> Belum Tersedia</button>`;
+                     btnHTML_K1 = `<button disabled class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-50 hover:bg-slate-100 rounded-xl text-xs font-bold text-slate-400 transition-colors border border-slate-200"><i class="fas fa-lock"></i> Belum Tersedia</button>`;
                 }
 
-                container.innerHTML += `
+                let btnHTML_K2 = '';
+                if (isTersediaK2) {
+                     btnHTML_K2 = `<button onclick="showToast('Mengunduh soal untuk: ${mapel}')" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-indigo-500 hover:bg-indigo-600 rounded-xl text-xs font-bold text-white transition-colors"><i class="fas fa-download"></i> Download</button>`;
+                } else {
+                     btnHTML_K2 = `<button disabled class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-50 hover:bg-slate-100 rounded-xl text-xs font-bold text-slate-400 transition-colors border border-slate-200"><i class="fas fa-lock"></i> Belum Tersedia</button>`;
+                }
+
+                const buildCard = (isAvail, btnHTML) => `
                     <div class="border border-slate-200 rounded-2xl p-5 bg-white hover:border-slate-300 transition-all flex flex-col h-full">
                         <div class="flex items-center gap-3 mb-5">
-                            <div class="w-10 h-10 rounded-xl ${isTersedia ? 'bg-indigo-50 text-indigo-500' : 'bg-slate-50 text-slate-400'} flex items-center justify-center text-lg shrink-0">
+                            <div class="w-10 h-10 rounded-xl ${isAvail ? 'bg-indigo-50 text-indigo-500' : 'bg-slate-50 text-slate-400'} flex items-center justify-center text-lg shrink-0">
                                 <i class="fas fa-file-pdf"></i>
                             </div>
                             <h3 class="font-bold text-sm text-slate-800 leading-tight line-clamp-2">${mapel}</h3>
@@ -1138,31 +1227,43 @@
                         </div>
                     </div>
                 `;
+
+                containerK1.innerHTML += buildCard(isTersediaK1, btnHTML_K1);
+                containerK2.innerHTML += buildCard(isTersediaK2, btnHTML_K2);
             });
         }
 
         function exportJadwalToPDF() {
             const element = document.getElementById('print-area-jadwal');
             const btn = document.getElementById('btn-print');
-            const originalText = btn.innerHTML;
             
-            // Sembunyikan teks loading, langsung matikan saja
-            btn.innerHTML = '<i class="fas fa-check"></i> Memproses...';
-            btn.disabled = true;
+            // Simpan status kalender
+            const btnKalender = document.getElementById('btn-kalender');
+            const wasKalenderHidden = btnKalender.classList.contains('hidden');
+            
+            // Sembunyikan kalender saat print
+            if(!wasKalenderHidden) btnKalender.classList.add('hidden');
+            
+            // Sembunyikan tulisan di tombol print agar tidak ter-screenshot
+            btn.style.visibility = 'hidden';
+            
+            // Beri waktu sedikit agar UI menyesuaikan sembunyi
+            setTimeout(() => {
+                const opt = {
+                    margin:       [5, 5, 5, 5], // margin diperkecil agar tidak potong
+                    filename:     `Jadwal_Pelajaran_${currentSession.nama_lengkap.replace(/\s+/g, '_')}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true, logging: false, windowWidth: 1200 }, // windowWidth dipaksa agar desktop view
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
+                };
 
-            const opt = {
-                margin:       [10, 10, 10, 10], // top, left, bottom, right
-                filename:     `Jadwal_Pelajaran_${currentSession.nama_lengkap.replace(/\s+/g, '_')}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' }
-            };
-
-            html2pdf().set(opt).from(element).save().then(() => {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-                showToast("File Jadwal berhasil diunduh!");
-            });
+                html2pdf().set(opt).from(element).save().then(() => {
+                    // Kembalikan tombol seperti semula
+                    btn.style.visibility = 'visible';
+                    if(!wasKalenderHidden) btnKalender.classList.remove('hidden');
+                    showToast("File Jadwal berhasil diunduh!");
+                });
+            }, 100);
         }
 
         function switchTab(tabId) {
