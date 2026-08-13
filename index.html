@@ -97,7 +97,7 @@
             color: white !important;
         }
 
-        /* Konfigurasi Khusus Cetak PDF agar Lebar Proporsional */
+        /* Konfigurasi Khusus Cetak PDF agar Lebar Proporsional & Tidak Terpotong */
         @media print {
             .hide-on-print { display: none !important; }
             .print-break-inside-avoid { break-inside: avoid; page-break-inside: avoid; }
@@ -105,22 +105,23 @@
             body { background: white; margin: 0; padding: 0; }
             
             /* Paksa kontainer menggunakan 100% ruang yang tersedia di kertas */
-            #print-area-jadwal { width: 100%; max-width: 100%; margin: 0; padding: 0; box-sizing: border-box; }
+            #print-area-jadwal { width: 100% !important; max-width: 100% !important; margin: 0 auto !important; padding: 0; box-sizing: border-box; }
+            .overflow-x-auto { overflow: visible !important; width: 100% !important; }
             
             /* Mengubah perilaku tabel agar pas dengan kertas */
             table { 
                 width: 100% !important; 
-                max-width: 100%; 
-                table-layout: auto !important; 
+                max-width: 100% !important; 
+                table-layout: fixed !important; /* Paksa kolom dibagi rata/sesuai lebar konten */
                 border-collapse: collapse; 
             }
             
             /* Memperkecil teks dan jarak antarsel agar muat */
             th, td { 
-                word-wrap: break-word; 
-                overflow-wrap: break-word;
+                word-wrap: break-word !important; 
+                overflow-wrap: break-word !important;
                 white-space: normal !important; 
-                padding: 4px !important; 
+                padding: 4px 2px !important; /* Kurangi padding horizontal */
                 font-size: 10px !important; 
                 border: 1px solid #e2e8f0 !important; 
             }
@@ -131,6 +132,9 @@
                 background: #f1f5f9 !important; 
                 -webkit-print-color-adjust: exact;
             }
+
+            /* Beri ruang lebih untuk kolom Jam */
+            th:first-child, td:first-child { width: 15% !important; }
         }
         
         html { scroll-behavior: smooth; }
@@ -241,10 +245,10 @@
                     <i class="fas fa-calendar-alt w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Jadwal Kelas Online</span>
                 </button>
                 <button onclick="switchTab('jadwal'); setTimeout(() => document.getElementById('tutor-section').scrollIntoView({behavior: 'smooth', block: 'start'}), 100);" id="nav-tutor" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm hover:bg-white/10 hover:text-white md:text-left text-center">
-                    <i class="fas fa-users w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Tutor & Kontak</span>
+                    <i class="fas fa-chalkboard-teacher w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Tutor & Kontak</span>
                 </button>
                 <button onclick="switchTab('presensi')" id="nav-presensi" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm hover:bg-white/10 hover:text-white md:text-left text-center">
-                    <i class="fas fa-clipboard-check w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Kehadiran Siswa</span>
+                    <i class="fas fa-user-check w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Kehadiran Siswa</span>
                 </button>
                 <button onclick="switchTab('dokumen')" id="nav-dokumen" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm hover:bg-white/10 hover:text-white md:text-left text-center">
                     <i class="fas fa-folder-open w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Dokumen Ujian</span>
@@ -253,7 +257,7 @@
                     <i class="fas fa-chart-line w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Rekap Nilai</span>
                 </button>
                 <button onclick="switchTab('pengaturan')" id="nav-pengaturan" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm hover:bg-white/10 hover:text-white md:text-left text-center">
-                    <i class="fas fa-lock w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Keamanan Akun</span>
+                    <i class="fas fa-shield-alt w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Keamanan Akun</span>
                 </button>
             </nav>
             
@@ -305,7 +309,7 @@
                                         <i class="fas fa-calendar-day"></i> Kalender Akademik
                                     </a>
                                     <button onclick="exportJadwalToPDF()" id="btn-print" class="flex-1 lg:flex-none justify-center btn-theme-gradient font-semibold py-2.5 px-4 rounded-xl text-sm shadow-md flex items-center gap-2">
-                                        <i class="fas fa-file-pdf"></i> Unduh Jadwal
+                                        <i class="fas fa-file-pdf"></i> <span id="text-btn-print">Unduh Jadwal</span>
                                     </button>
                                 </div>
                             </div>
@@ -755,20 +759,30 @@
             }
         }
 
+        // EXACT MATCH MAPEL FINDER (Mencegah Fiqih 1-2.A masuk ke siswa Fiqih 1-2)
         function isMapelMilikSiswa(namaMapelDicek) {
             if(!namaMapelDicek || namaMapelDicek === "EMPTY" || namaMapelDicek === "-") return false;
             
-            let mDicekLower = namaMapelDicek.toLowerCase();
-            const kelasLower = (currentSession.kelas || "").replace("Kelas ", "").toLowerCase();
+            let mDicekLower = namaMapelDicek.toLowerCase().trim();
+            const kelasLower = (currentSession.kelas || "").replace("Kelas ", "").toLowerCase().trim();
+
             if (kelasLower && mDicekLower.includes(kelasLower)) return true;
 
-            let mapelResmiLower = Array.from(officialSubjects).map(m => m.toLowerCase());
+            let mapelResmiLower = Array.from(officialSubjects).map(m => m.toLowerCase().trim());
             for (let mResmi of mapelResmiLower) {
-                if (mDicekLower.includes(mResmi) || mResmi.includes(mDicekLower)) return true;
+                // Exact Match
+                if (mDicekLower === mResmi) return true;
+                
+                // Gunakan Word Boundary (\b) untuk mencegah Fiqih 1-2.A cocok dengan "Fiqih 1-2"
+                // Escape karakter khusus dulu
+                let escapedStr = mResmi.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                let regex = new RegExp(`(^|\\s)${escapedStr}($|\\s)`, 'i');
+                if (regex.test(mDicekLower)) return true;
             }
             return false;
         }
 
+        // REPLACE PAI, B.ARAB, LITERASI
         function getSpesifikNamaMapel(namaGeneric) {
             let n = namaGeneric.toLowerCase();
             const pai = (currentSession.pai || "").trim();
@@ -802,11 +816,12 @@
             document.getElementById('print-kelas-siswa').innerText = txtKelas;
             
             const wNama = (currentSession.wali_kelas && currentSession.wali_kelas !== "EMPTY") ? currentSession.wali_kelas.trim() : "Admin Sekolah";
+            
+            // Logic Ustadz/Ustadzah
             const jenjangLower = (currentSession.jenjang || "").toLowerCase();
             let panggilan = "WALI KELAS";
-            
-            if (jenjangLower.includes("putri") && !wNama.toLowerCase().includes("ustadzah")) panggilan = "WALI KELAS, Ustadzah";
-            else if (jenjangLower.includes("putra") && !wNama.toLowerCase().includes("ustadz")) panggilan = "WALI KELAS, Ustadz";
+            if (jenjangLower.includes("putri") && !wNama.toLowerCase().includes("ustadzah")) panggilan = "WALI KELAS, USTADZAH";
+            else if (jenjangLower.includes("putra") && !wNama.toLowerCase().includes("ustadz")) panggilan = "WALI KELAS, USTADZ";
             
             document.getElementById('wali-title').innerText = panggilan;
             document.getElementById('wali-nama').innerText = wNama;
@@ -815,6 +830,7 @@
             document.getElementById('wali-wa').href = `https://wa.me/${waDefault}?text=Assalamu'alaikum,%20${encodeURIComponent(wNama)},%20saya%20wali%20dari%20${encodeURIComponent(currentSession.nama_lengkap)}`;
         }
 
+        // FITUR KALENDER AKADEMIK DIPERBAIKI (TOLERAN TERHADAP SPASI/CASE)
         async function loadKalender() {
             const btn = document.getElementById('btn-kalender');
             btn.classList.add('hidden'); 
@@ -828,6 +844,7 @@
                     .ilike('jenjang', `%${jUser}%`)
                     .limit(1);
 
+                // Pastikan ada isinya
                 if (data && data.length > 0 && data[0].link_kalender && data[0].link_kalender !== "EMPTY") {
                     btn.href = data[0].link_kalender;
                     btn.classList.remove('hidden');
@@ -969,6 +986,7 @@
             }
         }
 
+        // PRESENSI: SEDOT SEMUA DATA, HANYA RENAME MAPEL KHUSUS
         async function loadPresensiData() {
             const container = document.getElementById('presensi-container');
             container.innerHTML = '<div class="col-span-full p-8 text-center font-bold text-slate-400">Menarik rekam kehadiran...</div>';
@@ -993,13 +1011,13 @@
 
             const rawPresensiMap = {};
             data.forEach(item => {
-                let mapel = (item.mapel && item.mapel !== "EMPTY") ? item.mapel.trim() : "Umum";
-                // LOGIKA BARU: Tarik SEMUA mapel dari presensi_flat untuk siswa ini.
-                // KECUALI jika nama mapelnya butuh direplace dengan nama mapel khusus dari master data
-                mapel = getSpesifikNamaMapel(mapel);
+                let mapelAsli = (item.mapel && item.mapel !== "EMPTY") ? item.mapel.trim() : "Umum";
                 
-                // Tambahkan ke foundSubjects agar tombol dokumen ujiannya juga ikut dirender
-                foundSubjects.add(mapel);
+                // Gunakan getSpesifikNamaMapel untuk me-rename PAI, B.Arab, Lit Islam
+                // Sisanya biarkan apa adanya dari presensi_flat!
+                let mapelDitampilkan = getSpesifikNamaMapel(mapelAsli);
+                
+                foundSubjects.add(mapelDitampilkan); // Masukkan agar rekap nilai & dokumen tahu anak ini belajar apa
 
                 let pekanRaw = (item.pekan || "").toString().trim();
                 let sesiRaw = (item.sesi || "1").toString().trim();
@@ -1007,18 +1025,18 @@
                 let match = pekanRaw.match(/pekan\s*(\d+)/i);
                 let pNum = match ? parseInt(match[1]) : (parseInt(pekanRaw.replace(/\D/g, '')) || 1);
                 
+                // Ganti penulisan P1 jadi Pekan 1.1 dsb
                 let pKey = pekanRaw.toLowerCase().includes('.') ? pekanRaw : `Pekan ${pNum}.${sesiRaw}`;
 
                 const statusRaw = (item.status_hadir || "").toLowerCase().trim();
-                
                 let stFormatted = "A"; 
                 if (statusRaw === 'v' || statusRaw === '√' || statusRaw.includes('hadir') || statusRaw === 'h') stFormatted = "H";
                 else if (statusRaw === 's' || statusRaw.includes('sakit')) stFormatted = "S";
                 else if (statusRaw === 'i' || statusRaw.includes('izin')) stFormatted = "I";
                 else if (statusRaw === 'a' || statusRaw.includes('absen') || statusRaw === 'alfa') stFormatted = "A";
 
-                if (!rawPresensiMap[mapel]) rawPresensiMap[mapel] = [];
-                rawPresensiMap[mapel].push({ pekanNum: pNum, label: pKey, status: stFormatted });
+                if (!rawPresensiMap[mapelDitampilkan]) rawPresensiMap[mapelDitampilkan] = [];
+                rawPresensiMap[mapelDitampilkan].push({ pekanNum: pNum, label: pKey, status: stFormatted });
             });
 
             let stats = { h: 0, s_i: 0, a: 0, total: 0 };
@@ -1070,6 +1088,7 @@
             }
         }
 
+        // PECAH TABEL KEHADIRAN MAKS 4 KOLOM
         function renderPresensiTableChunks(list) {
             let html = '';
             const chunkSize = 4;
@@ -1103,21 +1122,24 @@
             return html;
         }
 
+        // REKAP NILAI (FILTER DIPERBAIKI AGAR MUNCUL)
         async function loadRekapNilai() {
             const containerOrtu = document.getElementById('rekap-ortu-container');
             containerOrtu.innerHTML = '<p class="text-xs text-slate-400"><i class="fas fa-circle-notch fa-spin"></i> Memuat form...</p>';
             
             try {
-                const jUser = (currentSession.jenjang || "").trim();
-                const { data: dataForm } = await supabaseClient
-                    .from('nilai_oleh_orang_tua')
-                    .select('*')
-                    .ilike('Jenjang', `%${jUser}%`);
+                // Jangan filter berdasarkan nama persis SMA Putri, cukup pastikan datanya eksis
+                const { data: dataForm } = await supabaseClient.from('nilai_oleh_orang_tua').select('*');
 
                 if(dataForm && dataForm.length > 0) {
                     containerOrtu.innerHTML = '';
                     let hasLink = false;
                     dataForm.forEach(item => {
+                        // Filter Jenjang Menggunakan iLike mandiri di JS
+                        const jUser = (currentSession.jenjang || "").toLowerCase().trim();
+                        const jItem = (item.Jenjang || "").toLowerCase().trim();
+                        if (jItem && !jUser.includes(jItem) && !jItem.includes(jUser)) return;
+
                         let linkGForm = item.link_google_form || item.link_form || "";
                         if(linkGForm && linkGForm !== "EMPTY") {
                             hasLink = true;
@@ -1144,6 +1166,7 @@
             containerTutorK2.innerHTML = '<div class="col-span-full"><p class="text-xs text-slate-400"><i class="fas fa-circle-notch fa-spin"></i> Memuat nilai K2...</p></div>';
             
             try {
+                // Tarik semua data rekap nilai
                 const { data: dataNilai, error } = await supabaseClient.from('rekap_nilai_flat').select('*');
                 if(error) throw error;
 
@@ -1157,9 +1180,11 @@
                         let jenjang = (item.Jenjang || item.jenjang || "").trim();
                         let kuartalStr = (item.kuartal || item.periode_kuartal || item.periode_kuarta || "").toLowerCase().trim();
                         
+                        // Filter Jenjang Longgar
                         const userJenjang = (currentSession.jenjang || "").toLowerCase();
                         if (jenjang && userJenjang && !jenjang.toLowerCase().includes(userJenjang) && !userJenjang.includes(jenjang.toLowerCase())) return;
                         
+                        // Jika mapel tidak dikhususkan untuk jenjang tersebut, buang
                         if (!isMapelMilikSiswa(mapel)) return;
                         
                         mapel = getSpesifikNamaMapel(mapel);
@@ -1216,14 +1241,14 @@
                 
                 const buildBtn = (isAvail) => {
                     if (isAvail) {
-                         return `<button onclick="showToast('Mengunduh dokumen: ${mapel}')" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 btn-theme-gradient rounded-xl text-xs font-bold transition-colors"><i class="fas fa-download"></i> Download</button>`;
+                         return `<button onclick="showToast('Mengunduh dokumen: ${mapel}')" class="w-full flex items-center justify-center gap-2 px-3 py-2.5 btn-theme-gradient rounded-xl text-xs font-bold"><i class="fas fa-download"></i> Download</button>`;
                     } else {
-                         return `<button disabled class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-50 hover:bg-slate-100 rounded-xl text-xs font-bold text-slate-400 transition-colors border border-slate-200 cursor-not-allowed"><i class="fas fa-lock"></i> Belum Tersedia</button>`;
+                         return `<button disabled class="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-slate-50 rounded-xl text-xs font-bold text-slate-400 border border-slate-200 cursor-not-allowed"><i class="fas fa-lock"></i> Belum Tersedia</button>`;
                     }
                 };
 
                 const buildCard = (isAvail) => `
-                    <div class="border border-slate-200 rounded-2xl p-5 bg-white transition-all flex flex-col h-full shadow-sm">
+                    <div class="border border-slate-200 rounded-2xl p-5 bg-white flex flex-col h-full shadow-sm">
                         <div class="flex items-center gap-3 mb-5">
                             <div class="w-10 h-10 rounded-xl ${isAvail ? 'bg-theme-light text-theme-main' : 'bg-slate-50 text-slate-400'} flex items-center justify-center text-lg shrink-0">
                                 <i class="fas fa-file-pdf"></i>
@@ -1241,36 +1266,47 @@
             });
         }
 
-        // FUNGSI EXPORT PDF YANG DIPERBAIKI (Tidak terpotong & tanpa loading teks)
+        // EXPORT PDF JADWAL (Mencegah terpotong & hilangkan loading text)
         function exportJadwalToPDF() {
             const element = document.getElementById('print-area-jadwal');
+            const btn = document.getElementById('btn-print');
             const btnKalender = document.getElementById('btn-kalender');
-            const btnPrint = document.getElementById('btn-print');
             
             const wasKalenderHidden = btnKalender.classList.contains('hidden');
-            
             if(!wasKalenderHidden) btnKalender.classList.add('hidden');
-            btnPrint.style.visibility = 'hidden';
+            btn.style.visibility = 'hidden';
 
-            document.querySelectorAll('.print-student-name').forEach(el => el.classList.replace('hidden', 'block'));
+            // Paksa elemen tabel menyesuaikan lebar 100% dari container
+            const tables = element.querySelectorAll('table');
+            tables.forEach(t => {
+                t.style.width = '100%';
+                t.style.tableLayout = 'fixed';
+            });
 
+            // Eksekusi PDF
             setTimeout(() => {
                 const opt = {
-                    margin:       [10, 10, 10, 10], 
+                    margin:       [5, 5, 5, 5],
                     filename:     `Jadwal_Pelajaran_${currentSession.nama_lengkap.replace(/\s+/g, '_')}.pdf`,
                     image:        { type: 'jpeg', quality: 0.98 },
-                    html2canvas:  { scale: 2, useCORS: true, windowWidth: 1000 }, // windowWidth di set ke 1000 agar muat ke landscape A4
+                    html2canvas:  { scale: 2, useCORS: true }, // Menghilangkan windowWidth statis agar ikut table-layout
                     jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' },
                     pagebreak:    { mode: 'avoid-all', before: '#tutor-section' } 
                 };
 
                 html2pdf().set(opt).from(element).save().then(() => {
-                    document.querySelectorAll('.print-student-name').forEach(el => el.classList.replace('block', 'hidden'));
-                    btnPrint.style.visibility = 'visible';
+                    btn.style.visibility = 'visible';
                     if(!wasKalenderHidden) btnKalender.classList.remove('hidden');
+                    
+                    // Kembalikan style tabel ke semula
+                    tables.forEach(t => {
+                        t.style.width = '';
+                        t.style.tableLayout = '';
+                    });
+
                     showToast("File Jadwal berhasil diunduh!");
                 });
-            }, 100);
+            }, 200);
         }
 
         function switchTab(tabId) {
@@ -1340,3 +1376,6 @@
     </script>
 </body>
 </html>
+```
+
+Silakan disalin dan dites langsung!
