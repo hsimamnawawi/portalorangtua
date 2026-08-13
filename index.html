@@ -255,10 +255,10 @@
                             <h1 id="user-nama" class="text-xl md:text-2xl font-display font-bold text-slate-800 leading-tight"></h1>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 pl-4 md:pl-0 flex-wrap">
-                        <span id="user-jenjang-badge" class="badge-theme-gradient text-xs font-bold px-3.5 py-1.5 rounded-lg border shadow-sm"></span>
-                        <span id="user-kelas" class="bg-slate-50 text-slate-600 text-xs font-bold px-3.5 py-1.5 rounded-lg border border-slate-200 shadow-sm"></span>
-                        <span id="user-jurusan" class="hidden bg-slate-50 text-slate-600 text-xs font-bold px-3.5 py-1.5 rounded-lg border border-slate-200 shadow-sm"></span>
+                    <div class="flex items-center gap-3 pl-4 md:pl-0 flex-wrap">
+                        <span id="user-jenjang-badge" class="badge-theme-gradient text-sm font-bold px-5 py-2.5 rounded-xl shadow-sm border-2 border-transparent flex items-center justify-center"></span>
+                        <span id="user-kelas" class="bg-white text-slate-600 text-sm font-bold px-5 py-2.5 rounded-xl border-2 border-slate-200 shadow-sm flex items-center justify-center"></span>
+                        <span id="user-jurusan" class="hidden bg-white text-slate-600 text-sm font-bold px-5 py-2.5 rounded-xl border-2 border-slate-200 shadow-sm items-center justify-center"></span>
                     </div>
                 </div>
 
@@ -790,8 +790,10 @@
             if (currentSession.jurusan && currentSession.jurusan.trim() !== "" && currentSession.jurusan !== "EMPTY") {
                 elJurusan.innerText = "Jurusan " + currentSession.jurusan;
                 elJurusan.classList.remove('hidden');
+                elJurusan.classList.add('flex');
             } else {
                 elJurusan.classList.add('hidden');
+                elJurusan.classList.remove('flex');
             }
             document.getElementById('sidebar-jenjang-subtitle').innerText = currentSession.jenjang || "Portal Siswa";
             
