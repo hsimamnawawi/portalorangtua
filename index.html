@@ -268,6 +268,13 @@
 
                 <!-- TAB 1 & 2: JADWAL KELAS & TUTOR -->
                 <div id="tab-jadwal" class="tab-content block fade-in flex-1">
+                    
+                    <div id="kalender-container" class="w-full mb-5 hidden hide-on-print">
+                        <a id="btn-kalender" href="#" target="_blank" class="w-full flex justify-center bg-white hover:bg-slate-50 text-theme-main font-bold py-3.5 px-4 rounded-xl text-sm shadow-sm items-center gap-2 border-2 border-theme-main transition-all">
+                            <i class="fas fa-calendar-day text-lg"></i> Lihat Kalender Akademik
+                        </a>
+                    </div>
+
                     <div id="print-area-jadwal" class="bg-transparent flex flex-col gap-6">
                         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
                             <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 hide-on-print">
@@ -275,11 +282,8 @@
                                     <h2 class="font-display font-bold text-xl text-slate-800 flex items-center gap-2"><i class="far fa-calendar-alt text-slate-400"></i> Jadwal Pelajaran Pekanan</h2>
                                 </div>
                                 
-                                <div class="flex items-center gap-3 w-full lg:w-auto">
-                                    <a id="btn-kalender" href="#" target="_blank" class="hidden flex-1 lg:flex-none justify-center btn-theme-outline font-semibold py-2.5 px-4 rounded-xl text-sm shadow-sm items-center gap-2">
-                                        <i class="fas fa-calendar-day"></i> Kalender Akademik
-                                    </a>
-                                    <button onclick="exportJadwalToPDF()" id="btn-print" class="flex-1 lg:flex-none justify-center btn-theme-gradient font-semibold py-2.5 px-4 rounded-xl text-sm shadow-md flex items-center gap-2">
+                                <div class="flex items-center w-full lg:w-auto">
+                                    <button onclick="exportJadwalToPDF()" id="btn-print" class="w-full lg:w-auto justify-center btn-theme-gradient font-semibold py-2.5 px-6 rounded-xl text-sm shadow-md flex items-center gap-2">
                                         <i class="fas fa-file-pdf"></i> <span id="text-btn-print">Unduh Jadwal</span>
                                     </button>
                                 </div>
@@ -809,9 +813,9 @@
 
         // FUNGSI KALENDER DIPERBAIKI (Pasti Muncul)
         async function loadKalender() {
+            const container = document.getElementById('kalender-container');
             const btn = document.getElementById('btn-kalender');
-            btn.classList.add('hidden'); 
-            btn.classList.remove('flex');
+            container.classList.add('hidden'); 
             
             try {
                 const jUser = (currentSession.jenjang || "").trim();
@@ -823,8 +827,7 @@
                     let row = data.find(r => r.jenjang && r.jenjang.trim().toLowerCase() === jUser.toLowerCase());
                     if (row && row.link_kalender && row.link_kalender !== "EMPTY") {
                         btn.href = row.link_kalender;
-                        btn.classList.remove('hidden');
-                        btn.classList.add('flex');
+                        container.classList.remove('hidden');
                     }
                 }
             } catch(e) { console.log("Gagal memuat link kalender:", e); }
@@ -958,6 +961,22 @@
                 // Gabungkan mapel dengan <br> agar rapi
                 let mapelHTML = Array.from(info.mapels).join('<br>');
 
+                // Pisahkan gelar dan nama
+                let displayNama = namaTutor;
+                let displayTitle = "";
+                if (namaTutor.toLowerCase().startsWith("ustadzah ")) {
+                    displayTitle = "Ustadzah";
+                    displayNama = namaTutor.substring(9).trim();
+                } else if (namaTutor.toLowerCase().startsWith("ustadz ")) {
+                    displayTitle = "Ustadz";
+                    displayNama = namaTutor.substring(7).trim();
+                }
+
+                let headerNamaHTML = displayTitle 
+                    ? `<span class="block text-xs font-bold text-slate-400 mb-0.5 tracking-wide">${displayTitle}</span>
+                       <span class="block font-display font-bold text-slate-800 leading-tight text-lg">${displayNama}</span>`
+                    : `<h4 class="font-display font-bold text-slate-800 leading-tight">${namaTutor}</h4>`;
+
                 container.innerHTML += `
                     <div class="border border-slate-200 rounded-2xl p-5 bg-white flex flex-col print-break-inside-avoid hover:shadow-md transition-shadow">
                         <div class="flex items-center gap-4 mb-4">
@@ -965,7 +984,7 @@
                                 <i class="fas fa-user-circle"></i>
                             </div>
                             <div>
-                                <h4 class="font-display font-bold text-slate-800 leading-tight">${namaTutor}</h4>
+                                ${headerNamaHTML}
                             </div>
                         </div>
                         <div class="bg-slate-50 border border-slate-100 text-slate-600 text-xs font-bold py-2 px-3 rounded-lg mb-4 text-center leading-relaxed">
@@ -1173,32 +1192,34 @@
                     const kelasLower = (currentSession.kelas || "").replace("Kelas ", "").toLowerCase().trim();
                     
                     dataNilai.forEach(item => {
-                        let mapelDb = (item.mapel || "").trim(); // ex: "B.Indo 10.A"
+                        let mapelDb = (item.mapel || "").trim(); 
                         let jenjangDb = (item.Jenjang || item.jenjang || "").trim().toLowerCase();
                         let kuartalStr = (item.kuartal || item.periode_kuartal || item.periode_kuarta || "").toLowerCase().trim();
                         
                         // Syarat 1: Jenjang Harus Sama
                         if (jenjangDb !== jUser) return;
                         
-                        // Syarat 2: Mapel tersebut ditujukan untuk siswa ini (Cek by Kelas)
-                        // Contoh: mapelDb = "B.Indo 10.A". kelasLower = "10.a". -> Cocok!
+                        // Syarat 2: Mapel ditujukan untuk siswa ini (Logika diperlonggar)
                         let cocok = false;
-                        if (kelasLower && mapelDb.toLowerCase().includes(kelasLower)) {
+                        
+                        // Cek 1: Gunakan isMapelMilikSiswa (Cek berdasarkan kelas)
+                        if (isMapelMilikSiswa(mapelDb)) {
                             cocok = true;
                         } else {
-                             // Jika format kelas tidak ada di string mapel, cek kecocokan dengan mapel dasar
-                             let mapelResmiLower = Array.from(officialSubjects).map(m => m.toLowerCase().trim());
-                             for (let mResmi of mapelResmiLower) {
-                                 let escapedStr = mResmi.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                                 let regex = new RegExp(`(^|\\s)${escapedStr}($|\\s)`, 'i');
-                                 if (regex.test(mapelDb.toLowerCase())) {
-                                     cocok = true;
-                                     break;
-                                 }
-                             }
+                            // Cek 2: Fallback ekstrim -> Jika mapel ini ada di Jadwal atau Presensi anak, loloskan!
+                            let combinedMapels = Array.from(new Set([...officialSubjects, ...foundSubjects])).map(m => m.toLowerCase().trim());
+                            let mapelDbLower = mapelDb.toLowerCase();
+                            
+                            for (let mResmi of combinedMapels) {
+                                // Pastikan tidak mengecek kata yg terlalu pendek
+                                if (mResmi.length > 2 && mapelDbLower.includes(mResmi)) {
+                                    cocok = true;
+                                    break;
+                                }
+                            }
                         }
 
-                        if (!cocok) return; // Buang mapel jika beda kelas/jurusan
+                        if (!cocok) return; // Buang mapel jika benar-benar tidak terkait dengan anak ini
                         
                         mapelDb = getSpesifikNamaMapel(mapelDb);
                         let link = item.link_asli && item.link_asli !== "EMPTY" ? item.link_asli : (item.link_singkat && item.link_singkat !== "EMPTY" ? item.link_singkat : "#");
@@ -1283,10 +1304,7 @@
         function exportJadwalToPDF() {
             const element = document.getElementById('print-area-jadwal');
             const btn = document.getElementById('btn-print');
-            const btnKalender = document.getElementById('btn-kalender');
             
-            const wasKalenderHidden = btnKalender.classList.contains('hidden');
-            if(!wasKalenderHidden) btnKalender.classList.add('hidden');
             btn.style.visibility = 'hidden';
 
             // Paksa elemen tabel menyesuaikan lebar kertas
@@ -1309,7 +1327,6 @@
 
                 html2pdf().set(opt).from(element).save().then(() => {
                     btn.style.visibility = 'visible';
-                    if(!wasKalenderHidden) btnKalender.classList.remove('hidden');
                     
                     // Kembalikan style tabel ke semula
                     tables.forEach(t => {
