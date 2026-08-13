@@ -16,10 +16,10 @@
     <!-- Supabase JS Client CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- Awesomplete CSS (Untuk Auto-suggest) -->
+    <!-- Awesomplete CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css" />
     
-    <!-- html2pdf JS (Untuk fitur Cetak PDF) -->
+    <!-- html2pdf JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <!-- Tailwind CSS -->
@@ -31,9 +31,6 @@
                     fontFamily: { 
                         sans: ['Inter', 'sans-serif'], 
                         display: ['Space Grotesk', 'sans-serif'] 
-                    },
-                    colors: {
-                        'theme-gray': '#475569', 
                     }
                 }
             }
@@ -49,33 +46,23 @@
             --theme-text: #ffffff;
         }
 
-        body { background-color: #f8fafc; }
+        body { background-color: #f8fafc; font-family: 'Inter', sans-serif; }
         .font-display { font-family: 'Space Grotesk', sans-serif; }
         .fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
-        /* Toast Animations */
         .toast-enter { transform: translateY(0); opacity: 1; pointer-events: auto; }
         .toast-exit { transform: translateY(150%); opacity: 0; pointer-events: none; }
         
-        /* Awesomplete Styles */
         .awesomplete { width: 100%; display: block; }
         .awesomplete > ul { border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0; margin-top: 0.25rem; font-size: 0.95rem; font-weight: 600; z-index: 50; max-height: 250px; overflow-y: auto;}
         .awesomplete > ul > li { padding: 0.85rem 1.2rem; color: #475569; transition: all 0.2s; }
         .awesomplete > ul > li:hover, .awesomplete > ul > li[aria-selected="true"] { background-color: #f1f5f9; color: #0f172a; }
-        .awesomplete mark { background: transparent; font-weight: 700; color: #0f172a; }
-
-        /* Dynamic Theme Classes */
-        .bg-theme-main { background-color: var(--theme-main) !important; color: var(--theme-text) !important; }
-        .text-theme-main { color: var(--theme-main) !important; }
-        .border-theme-main { border-color: var(--theme-main) !important; }
-        .bg-theme-light { background-color: var(--theme-light) !important; }
         
         .btn-theme-gradient {
             background: linear-gradient(135deg, var(--theme-grad-start) 0%, var(--theme-grad-end) 100%) !important;
@@ -103,8 +90,6 @@
         .badge-theme-gradient {
             background: linear-gradient(135deg, var(--theme-grad-start) 0%, var(--theme-grad-end) 100%) !important;
             color: white !important;
-            box-shadow: 0 2px 10px -2px var(--theme-shadow) !important;
-            border: none !important;
         }
 
         .table-header-theme {
@@ -112,39 +97,40 @@
             color: white !important;
         }
 
-        /* Print Configuration */
+        /* Konfigurasi Khusus Cetak PDF agar Lebar Proporsional */
         @media print {
             .hide-on-print { display: none !important; }
-            /* Mencegah elemen terpotong */
-            .print-avoid-break { page-break-inside: avoid; break-inside: avoid; }
+            .print-break-inside-avoid { break-inside: avoid; page-break-inside: avoid; }
+            
             body { background: white; margin: 0; padding: 0; }
             
-            #print-area-jadwal { width: 100%; max-width: 100%; margin: 0 auto; }
-            .overflow-x-auto { overflow: visible !important; width: 100%; }
+            /* Paksa kontainer menggunakan 100% ruang yang tersedia di kertas */
+            #print-area-jadwal { width: 100%; max-width: 100%; margin: 0; padding: 0; box-sizing: border-box; }
             
+            /* Mengubah perilaku tabel agar pas dengan kertas */
             table { 
                 width: 100% !important; 
                 max-width: 100%; 
-                table-layout: fixed; 
+                table-layout: auto !important; 
                 border-collapse: collapse; 
             }
+            
+            /* Memperkecil teks dan jarak antarsel agar muat */
             th, td { 
                 word-wrap: break-word; 
                 overflow-wrap: break-word;
                 white-space: normal !important; 
-                padding: 6px !important; 
-                font-size: 11px !important; 
+                padding: 4px !important; 
+                font-size: 10px !important; 
                 border: 1px solid #e2e8f0 !important; 
             }
             
             #table-jadwal-head th { 
-                font-size: 12px !important; 
+                font-size: 11px !important; 
                 color: black !important; 
                 background: #f1f5f9 !important; 
                 -webkit-print-color-adjust: exact;
             }
-
-            th:first-child, td:first-child { width: 15% !important; }
         }
         
         html { scroll-behavior: smooth; }
@@ -154,8 +140,6 @@
 
     <!-- HALAMAN LOGIN -->
     <div id="login-view" class="flex flex-col lg:flex-row min-h-screen w-full bg-slate-50 relative z-10">
-        
-        <!-- PANEL KIRI (Branding) -->
         <div class="lg:w-[55%] bg-[#1e293b] flex flex-col justify-between items-center p-8 lg:p-12 text-white text-center relative overflow-hidden min-h-[100vh] lg:min-h-0">
             <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white to-transparent mix-blend-overlay"></div>
             
@@ -173,19 +157,19 @@
                 <p class="text-slate-400 font-medium mb-10 text-sm lg:text-base tracking-wide">Sistem Informasi Akademik Terpadu &bull; TA 2026-2027</p>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-                    <div class="flex items-center justify-center gap-3 border border-slate-700 bg-slate-800/50 rounded-2xl py-3.5 px-4 backdrop-blur-sm">
+                    <div class="flex items-center justify-center gap-3 border border-slate-700 bg-slate-800/50 rounded-2xl py-3.5 px-4">
                         <i class="fas fa-book-open text-slate-300 text-lg w-6"></i>
                         <span class="text-sm font-semibold text-slate-100">Sesuai Sunnah</span>
                     </div>
-                    <div class="flex items-center justify-center gap-3 border border-slate-700 bg-slate-800/50 rounded-2xl py-3.5 px-4 backdrop-blur-sm">
+                    <div class="flex items-center justify-center gap-3 border border-slate-700 bg-slate-800/50 rounded-2xl py-3.5 px-4">
                         <i class="fas fa-cubes text-slate-300 text-lg w-6"></i>
                         <span class="text-sm font-semibold text-slate-100">Pembelajaran Modular</span>
                     </div>
-                    <div class="flex items-center justify-center gap-3 border border-slate-700 bg-slate-800/50 rounded-2xl py-3.5 px-4 backdrop-blur-sm">
+                    <div class="flex items-center justify-center gap-3 border border-slate-700 bg-slate-800/50 rounded-2xl py-3.5 px-4">
                         <i class="fas fa-laptop-house text-slate-300 text-lg w-6"></i>
                         <span class="text-sm font-semibold text-slate-100">Kelas Online Interaktif</span>
                     </div>
-                    <div class="flex items-center justify-center gap-3 border border-slate-700 bg-slate-800/50 rounded-2xl py-3.5 px-4 backdrop-blur-sm">
+                    <div class="flex items-center justify-center gap-3 border border-slate-700 bg-slate-800/50 rounded-2xl py-3.5 px-4">
                         <i class="fas fa-comments text-slate-300 text-lg w-6"></i>
                         <span class="text-sm font-semibold text-slate-100">Diskusi & Konsultasi Tutor</span>
                     </div>
@@ -200,7 +184,6 @@
             </div>
         </div>
 
-        <!-- PANEL KANAN (Form Input) -->
         <div class="lg:w-[45%] flex flex-col justify-center items-center p-8 lg:p-16 bg-white relative shadow-[-15px_0_30px_-15px_rgba(0,0,0,0.1)]">
             <div class="w-full max-w-sm">
                 <h3 class="text-2xl font-display font-bold mb-8 text-slate-800 tracking-tight text-center">Masuk ke Portal</h3>
@@ -215,7 +198,7 @@
                         <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Password</label>
                         <div class="relative">
                             <input type="password" id="input-password" required class="w-full border-2 border-slate-200 bg-slate-50 text-slate-800 p-3.5 rounded-xl text-sm font-semibold outline-none focus:border-slate-400 focus:bg-white transition-all shadow-sm pr-12">
-                            <button type="button" onclick="togglePassword('input-password', 'eye-icon-login')" class="absolute inset-y-0 right-0 px-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors">
+                            <button type="button" onclick="togglePassword('input-password', 'eye-icon-login')" class="absolute inset-y-0 right-0 px-4 flex items-center text-slate-400 hover:text-slate-600">
                                 <i id="eye-icon-login" class="far fa-eye"></i>
                             </button>
                         </div>
@@ -236,7 +219,6 @@
     <!-- MAIN APP CONTAINER -->
     <div id="app-container" class="hidden min-h-screen bg-slate-50 flex-col md:flex-row relative">
         
-        <!-- Loading Overlay -->
         <div id="loading-view" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/95 backdrop-blur-sm hidden transition-opacity duration-300">
             <div id="spinner-loader" class="w-14 h-14 border-4 border-slate-200 rounded-full animate-spin mb-5 shadow-sm"></div>
             <p id="loading-text" class="font-display font-bold text-xl text-slate-800 tracking-tight">Memuat modul akademik...</p>
@@ -255,47 +237,46 @@
             </div>
             
             <nav class="flex-1 p-4 space-y-2 overflow-y-auto mt-2 flex flex-row md:flex-col justify-between md:justify-start">
-                <button onclick="switchTab('jadwal'); document.getElementById('tab-jadwal').scrollIntoView();" id="nav-jadwal" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm transition-all hover:bg-white/10 hover:text-white md:text-left text-center">
+                <button onclick="switchTab('jadwal'); document.getElementById('tab-jadwal').scrollIntoView();" id="nav-jadwal" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm hover:bg-white/10 hover:text-white md:text-left text-center">
                     <i class="fas fa-calendar-alt w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Jadwal Kelas Online</span>
                 </button>
-                <button onclick="switchTab('jadwal'); setTimeout(() => document.getElementById('tutor-section').scrollIntoView({behavior: 'smooth', block: 'start'}), 100);" id="nav-tutor" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm transition-all hover:bg-white/10 hover:text-white md:text-left text-center">
+                <button onclick="switchTab('jadwal'); setTimeout(() => document.getElementById('tutor-section').scrollIntoView({behavior: 'smooth', block: 'start'}), 100);" id="nav-tutor" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm hover:bg-white/10 hover:text-white md:text-left text-center">
                     <i class="fas fa-users w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Tutor & Kontak</span>
                 </button>
-                <button onclick="switchTab('presensi')" id="nav-presensi" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm transition-all hover:bg-white/10 hover:text-white md:text-left text-center">
+                <button onclick="switchTab('presensi')" id="nav-presensi" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm hover:bg-white/10 hover:text-white md:text-left text-center">
                     <i class="fas fa-clipboard-check w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Kehadiran Siswa</span>
                 </button>
-                <button onclick="switchTab('dokumen')" id="nav-dokumen" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm transition-all hover:bg-white/10 hover:text-white md:text-left text-center">
+                <button onclick="switchTab('dokumen')" id="nav-dokumen" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm hover:bg-white/10 hover:text-white md:text-left text-center">
                     <i class="fas fa-folder-open w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Dokumen Ujian</span>
                 </button>
-                <button onclick="switchTab('rekap')" id="nav-rekap" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm transition-all hover:bg-white/10 hover:text-white md:text-left text-center">
+                <button onclick="switchTab('rekap')" id="nav-rekap" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm hover:bg-white/10 hover:text-white md:text-left text-center">
                     <i class="fas fa-chart-line w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Rekap Nilai</span>
                 </button>
-                <button onclick="switchTab('pengaturan')" id="nav-pengaturan" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm transition-all hover:bg-white/10 hover:text-white md:text-left text-center">
+                <button onclick="switchTab('pengaturan')" id="nav-pengaturan" class="nav-btn md:w-full flex flex-col md:flex-row items-center gap-1 md:gap-3 p-2 md:px-4 md:py-3.5 text-slate-300 font-semibold rounded-xl text-[10px] md:text-sm hover:bg-white/10 hover:text-white md:text-left text-center">
                     <i class="fas fa-lock w-5 text-center text-lg md:text-base opacity-90"></i> <span class="hidden md:inline">Keamanan Akun</span>
                 </button>
             </nav>
             
             <div class="p-4 border-t border-white/10 bg-black/20 hidden md:block">
-                <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-3.5 text-red-400 font-bold rounded-xl text-sm hover:bg-red-500/10 hover:text-red-300 transition-all border border-red-500/20">
-                    <i class="fas fa-arrow-left"></i> Keluar
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-2 px-4 py-3.5 text-red-400 font-bold rounded-xl text-sm hover:bg-red-500/10 hover:text-red-300 border border-red-500/20">
+                    <i class="fas fa-sign-out-alt fa-flip-horizontal"></i> Keluar
                 </button>
             </div>
-            <!-- Logout Mobile -->
             <button onclick="logout()" class="md:hidden absolute top-4 right-4 text-red-400 p-2">
-                <i class="fas fa-arrow-left text-xl"></i>
+                <i class="fas fa-sign-out-alt fa-flip-horizontal text-xl"></i>
             </button>
         </aside>
 
         <!-- Main Content Area -->
         <main class="md:ml-64 flex-1 min-h-screen bg-slate-50 flex flex-col items-center overflow-x-hidden">
-            
             <div class="w-full max-w-6xl p-4 md:p-8 flex flex-col flex-1">
+                
                 <!-- Header Info Siswa -->
-                <div class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden mb-6 hide-on-print print-avoid-break">
-                    <div id="header-accent-bar" class="absolute top-0 left-0 w-2 h-full transition-colors duration-500 bg-theme-main"></div>
+                <div class="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden mb-6 hide-on-print">
+                    <div id="header-accent-bar" class="absolute top-0 left-0 w-2 h-full bg-theme-main"></div>
                     
                     <div class="flex items-center gap-4 pl-4">
-                        <div id="user-avatar-box" class="w-14 h-14 rounded-full flex items-center justify-center text-2xl shrink-0 shadow-sm transition-colors duration-500 bg-theme-light text-theme-main border-2 border-theme-main">
+                        <div id="user-avatar-box" class="w-14 h-14 rounded-full flex items-center justify-center text-2xl shrink-0 shadow-sm bg-theme-light text-theme-main border-2 border-theme-main">
                             <i class="fas fa-user-graduate"></i>
                         </div>
                         <div>
@@ -304,34 +285,31 @@
                         </div>
                     </div>
                     <div class="flex items-center gap-2 pl-4 md:pl-0 flex-wrap">
-                        <span id="user-jenjang-badge" class="badge-theme-gradient text-xs font-bold px-3.5 py-1.5 rounded-lg border shadow-sm transition-colors duration-500"></span>
+                        <span id="user-jenjang-badge" class="badge-theme-gradient text-xs font-bold px-3.5 py-1.5 rounded-lg border shadow-sm"></span>
                         <span id="user-kelas" class="bg-slate-50 text-slate-600 text-xs font-bold px-3.5 py-1.5 rounded-lg border border-slate-200 shadow-sm"></span>
                         <span id="user-jurusan" class="hidden bg-slate-50 text-slate-600 text-xs font-bold px-3.5 py-1.5 rounded-lg border border-slate-200 shadow-sm"></span>
                     </div>
                 </div>
 
-                <!-- TAB 1 & 2: JADWAL KELAS & TUTOR (GABUNGAN) -->
+                <!-- TAB 1 & 2: JADWAL KELAS & TUTOR -->
                 <div id="tab-jadwal" class="tab-content block fade-in flex-1">
-                    
                     <div id="print-area-jadwal" class="bg-transparent flex flex-col gap-6">
-                        <!-- Bagian Jadwal -->
-                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative print-avoid-break">
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
                             <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 hide-on-print">
                                 <div>
                                     <h2 class="font-display font-bold text-xl text-slate-800 flex items-center gap-2"><i class="far fa-calendar-alt text-slate-400"></i> Jadwal Pelajaran Pekanan</h2>
                                 </div>
                                 
                                 <div class="flex items-center gap-3 w-full lg:w-auto">
-                                    <a id="btn-kalender" href="#" target="_blank" class="hidden flex-1 lg:flex-none justify-center btn-theme-outline font-semibold py-2.5 px-4 rounded-xl text-sm transition-colors shadow-sm items-center gap-2">
+                                    <a id="btn-kalender" href="#" target="_blank" class="hidden flex-1 lg:flex-none justify-center btn-theme-outline font-semibold py-2.5 px-4 rounded-xl text-sm shadow-sm items-center gap-2">
                                         <i class="fas fa-calendar-day"></i> Kalender Akademik
                                     </a>
-                                    <button onclick="exportJadwalToPDF()" id="btn-print" class="flex-1 lg:flex-none justify-center btn-theme-gradient font-semibold py-2.5 px-4 rounded-xl text-sm transition-colors shadow-md flex items-center gap-2">
-                                        <i class="fas fa-file-pdf"></i> <span id="text-btn-print">Unduh Jadwal</span>
+                                    <button onclick="exportJadwalToPDF()" id="btn-print" class="flex-1 lg:flex-none justify-center btn-theme-gradient font-semibold py-2.5 px-4 rounded-xl text-sm shadow-md flex items-center gap-2">
+                                        <i class="fas fa-file-pdf"></i> Unduh Jadwal
                                     </button>
                                 </div>
                             </div>
 
-                            <!-- Header Cetak Khusus (Hanya muncul di PDF) -->
                             <div class="hidden print:block p-6 border-b border-slate-200 text-center">
                                 <h2 class="text-2xl font-display font-bold text-slate-800 mb-2">Jadwal Kelas Online & Tutor</h2>
                                 <p class="text-base text-slate-600 font-medium">Nama: <span id="print-nama-siswa" class="font-bold text-slate-800"></span> | Kelas: <span id="print-kelas-siswa" class="font-bold text-slate-800"></span></p>
@@ -339,25 +317,23 @@
                             
                             <div class="overflow-x-auto print:overflow-visible w-full">
                                 <table class="w-full text-sm border-collapse">
-                                    <thead id="table-jadwal-head" class="table-header-theme transition-colors duration-500">
+                                    <thead id="table-jadwal-head" class="table-header-theme">
                                         <tr>
-                                            <th class="p-4 font-semibold text-center whitespace-nowrap md:whitespace-normal w-24 md:w-32 border-r border-white/20">Waktu (WIB)</th>
-                                            <th class="p-4 font-semibold text-center border-r border-white/20 w-auto">Senin</th>
-                                            <th class="p-4 font-semibold text-center border-r border-white/20 w-auto">Selasa</th>
-                                            <th class="p-4 font-semibold text-center border-r border-white/20 w-auto">Rabu</th>
-                                            <th class="p-4 font-semibold text-center border-r border-white/20 w-auto">Kamis</th>
-                                            <th class="p-4 font-semibold text-center border-r border-white/20 w-auto">Jumat</th>
-                                            <th id="th-sabtu" class="p-4 font-semibold text-center hidden w-auto">Sabtu</th>
+                                            <th class="p-4 font-semibold text-center whitespace-nowrap w-24 md:w-32 border-r border-white/20">Waktu (WIB)</th>
+                                            <th class="p-4 font-semibold text-center border-r border-white/20">Senin</th>
+                                            <th class="p-4 font-semibold text-center border-r border-white/20">Selasa</th>
+                                            <th class="p-4 font-semibold text-center border-r border-white/20">Rabu</th>
+                                            <th class="p-4 font-semibold text-center border-r border-white/20">Kamis</th>
+                                            <th class="p-4 font-semibold text-center border-r border-white/20">Jumat</th>
+                                            <th id="th-sabtu" class="p-4 font-semibold text-center hidden">Sabtu</th>
                                         </tr>
                                     </thead>
                                     <tbody id="jadwal-body" class="divide-y divide-slate-100">
-                                        <!-- Data Jadwal -->
                                     </tbody>
                                 </table>
                             </div>
 
-                            <!-- Blok Catatan -->
-                            <div class="p-6 bg-slate-50 border-t border-slate-100 print-avoid-break">
+                            <div class="p-6 bg-slate-50 border-t border-slate-100">
                                 <h3 class="font-display font-bold text-slate-700 flex items-center gap-2 mb-3 text-sm">
                                     <i class="fas fa-bookmark text-theme-main text-lg"></i> Catatan
                                 </h3>
@@ -368,8 +344,8 @@
                             </div>
                         </div>
 
-                        <!-- Bagian Tutor (Akan Tercetak Bersama Jadwal) -->
-                        <div id="tutor-section" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden scroll-mt-6 print-avoid-break mt-2">
+                        <!-- Tutor Section -->
+                        <div id="tutor-section" class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden scroll-mt-6 print-break-inside-avoid mt-2">
                             <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 hide-on-print">
                                 <h2 class="font-display font-bold text-xl text-slate-800 flex items-center gap-2"><i class="fas fa-chalkboard-teacher text-slate-400"></i> Tutor Saya</h2>
                             </div>
@@ -378,8 +354,7 @@
                                  <h2 class="font-display font-bold text-xl text-slate-800">Daftar Tutor Pengajar</h2>
                             </div>
 
-                            <!-- Area Wali Kelas -->
-                            <div class="p-6 border-b border-slate-100 bg-theme-light bg-opacity-30 print-avoid-break">
+                            <div class="p-6 border-b border-slate-100 bg-theme-light bg-opacity-30">
                                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Wali Kelas</h3>
                                 <div id="wali-kelas-container" class="flex flex-col sm:flex-row items-center justify-between border border-theme-main border-opacity-30 bg-theme-light rounded-xl p-4 gap-4 shadow-sm">
                                     <div class="flex items-center gap-4 w-full sm:w-auto">
@@ -392,19 +367,16 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-4 w-full sm:w-auto justify-end">
-                                        <span id="wali-no-hp" class="text-sm font-semibold text-slate-600 font-mono hidden sm:inline"></span>
-                                        <a href="#" id="wali-wa" target="_blank" class="btn-theme-gradient px-5 py-2.5 rounded-full font-semibold text-sm flex items-center justify-center gap-2 transition-colors shadow-sm w-full sm:w-auto hide-on-print">
+                                        <a href="#" id="wali-wa" target="_blank" class="btn-theme-gradient px-5 py-2.5 rounded-full font-semibold text-sm flex items-center justify-center gap-2 shadow-sm w-full sm:w-auto hide-on-print">
                                             <i class="fab fa-whatsapp text-lg"></i> Hubungi Wali Kelas
                                         </a>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Area Tutor Mapel -->
                             <div class="p-6 bg-slate-50/30">
                                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Tutor Mata Pelajaran</h3>
                                 <div id="tutor-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-start">
-                                    <!-- Daftar Tutor Mapel -->
                                 </div>
                             </div>
                         </div>
@@ -413,8 +385,6 @@
 
                 <!-- TAB 3: PRESENSI -->
                 <div id="tab-presensi" class="tab-content hidden fade-in flex-1">
-                    
-                    <!-- Statistik Kehadiran -->
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                         <div class="bg-white border border-slate-200 rounded-2xl p-4 flex items-center gap-4 shadow-sm">
                             <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl"><i class="fas fa-check"></i></div>
@@ -459,7 +429,6 @@
                         <div class="p-6 bg-slate-50/30">
                             <p class="text-sm text-slate-500 mb-6">Bunda/Ayah, berikut adalah rincian ketidakhadiran Ananda pada setiap sesi pertemuan per pekan.</p>
                             <div id="presensi-container" class="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
-                                <!-- Data Presensi Format Tabel -->
                             </div>
                         </div>
                     </div>
@@ -473,26 +442,21 @@
                             <p class="text-sm text-slate-500 mt-1">Akses soal ujian PDF (GDrive) sesuai dengan mata pelajaran siswa.</p>
                         </div>
                         <div class="p-6 bg-slate-50/30">
-                            <!-- Kuartal 1 -->
-                            <h3 class="font-display font-bold text-lg text-slate-700 mb-4 border-l-4 border-theme-main pl-3">Kuartal 1</h3>
+                            <h3 class="font-display font-bold text-lg text-slate-700 mb-4 border-l-4 border-indigo-500 pl-3">Kuartal 1</h3>
                             <div id="dokumen-k1-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-8 items-start">
-                                <!-- Tombol Ujian K1 -->
                             </div>
 
-                            <!-- Kuartal 2 -->
-                            <h3 class="font-display font-bold text-lg text-slate-700 mb-4 border-l-4 border-theme-main pl-3">Kuartal 2</h3>
+                            <h3 class="font-display font-bold text-lg text-slate-700 mb-4 border-l-4 border-indigo-500 pl-3">Kuartal 2</h3>
                             <div id="dokumen-k2-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 items-start">
-                                <!-- Tombol Ujian K2 -->
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB 5: REKAP NILAI (Atas Bawah) -->
+                <!-- TAB 5: REKAP NILAI -->
                 <div id="tab-rekap" class="tab-content hidden fade-in flex-1">
                     <div class="flex flex-col gap-6 mb-6">
-                        
-                        <!-- Bagian 1: Form Input Orang Tua -->
+                        <!-- Form Ortu -->
                         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                             <div class="px-6 py-5 border-b border-slate-100 bg-amber-50">
                                 <h2 id="judul-form-ortu" class="font-display font-bold text-lg text-slate-800 flex items-center gap-2"><i class="fas fa-edit text-amber-500"></i> Form Nilai Pekanan, Adab, Olahraga & Catatan dari Orang Tua</h2>
@@ -505,32 +469,26 @@
                                     Semoga Allah memberikan kemudahan dan kelancaran kepada kita semuanya, Aamiin ya Rabbal Alamiin.
                                 </p>
                                 <div id="rekap-ortu-container" class="space-y-3">
-                                    <!-- Tombol GForm -->
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Bagian 2: Dokumen Rekap Asli HSIN -->
+                        <!-- Rekap Tutor -->
                         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                             <div class="px-6 py-5 border-b border-slate-100 bg-blue-50">
                                 <h2 class="font-display font-bold text-lg text-slate-800 flex items-center gap-2"><i class="fas fa-chart-line text-blue-500"></i> Rekap Nilai per Mata Pelajaran</h2>
                                 <p class="text-sm text-slate-600 mt-1">Akses rekapitulasi nilai resmi dari Tutor HSIN per mata pelajaran.</p>
                             </div>
                             <div class="p-6 bg-slate-50/50">
-                                <!-- Kuartal 1 -->
                                 <h3 class="font-display font-bold text-md text-slate-700 mb-3 border-l-4 border-blue-500 pl-3">Kuartal 1</h3>
                                 <div id="rekap-tutor-k1-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-6 items-start">
-                                    <!-- Tombol Nilai Asli K1 -->
                                 </div>
 
-                                <!-- Kuartal 2 -->
                                 <h3 class="font-display font-bold text-md text-slate-700 mb-3 border-l-4 border-blue-500 pl-3">Kuartal 2</h3>
                                 <div id="rekap-tutor-k2-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 items-start">
-                                    <!-- Tombol Nilai Asli K2 -->
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
 
@@ -545,29 +503,29 @@
                                 <div>
                                     <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Password Lama</label>
                                     <div class="relative mb-4">
-                                        <input type="password" id="pwd-lama" required placeholder="Masukkan password saat ini..." class="w-full border-2 border-slate-200 bg-slate-50 p-3.5 rounded-xl text-sm font-semibold focus:bg-white focus:border-slate-400 outline-none shadow-sm transition-all pr-12">
-                                        <button type="button" onclick="togglePassword('pwd-lama', 'eye-lama')" class="absolute inset-y-0 right-0 px-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors">
+                                        <input type="password" id="pwd-lama" required placeholder="Masukkan password saat ini..." class="w-full border-2 border-slate-200 bg-slate-50 p-3.5 rounded-xl text-sm font-semibold outline-none pr-12">
+                                        <button type="button" onclick="togglePassword('pwd-lama', 'eye-lama')" class="absolute inset-y-0 right-0 px-4 flex items-center text-slate-400">
                                             <i id="eye-lama" class="far fa-eye"></i>
                                         </button>
                                     </div>
 
                                     <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Password Baru</label>
                                     <div class="relative mb-4">
-                                        <input type="password" id="pwd-baru" required placeholder="Buat password baru..." class="w-full border-2 border-slate-200 bg-slate-50 p-3.5 rounded-xl text-sm font-semibold focus:bg-white focus:border-slate-400 outline-none shadow-sm transition-all pr-12">
-                                        <button type="button" onclick="togglePassword('pwd-baru', 'eye-baru')" class="absolute inset-y-0 right-0 px-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors">
+                                        <input type="password" id="pwd-baru" required placeholder="Buat password baru..." class="w-full border-2 border-slate-200 bg-slate-50 p-3.5 rounded-xl text-sm font-semibold outline-none pr-12">
+                                        <button type="button" onclick="togglePassword('pwd-baru', 'eye-baru')" class="absolute inset-y-0 right-0 px-4 flex items-center text-slate-400">
                                             <i id="eye-baru" class="far fa-eye"></i>
                                         </button>
                                     </div>
                                     
                                     <label class="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-wider">Konfirmasi Password</label>
                                     <div class="relative">
-                                        <input type="password" id="pwd-konfirmasi" required placeholder="Ulangi password baru..." class="w-full border-2 border-slate-200 bg-slate-50 p-3.5 rounded-xl text-sm font-semibold focus:bg-white focus:border-slate-400 outline-none shadow-sm transition-all pr-12">
-                                        <button type="button" onclick="togglePassword('pwd-konfirmasi', 'eye-konf')" class="absolute inset-y-0 right-0 px-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors">
+                                        <input type="password" id="pwd-konfirmasi" required placeholder="Ulangi password baru..." class="w-full border-2 border-slate-200 bg-slate-50 p-3.5 rounded-xl text-sm font-semibold outline-none pr-12">
+                                        <button type="button" onclick="togglePassword('pwd-konfirmasi', 'eye-konf')" class="absolute inset-y-0 right-0 px-4 flex items-center text-slate-400">
                                             <i id="eye-konf" class="far fa-eye"></i>
                                         </button>
                                     </div>
                                 </div>
-                                <button type="submit" id="btn-save-pwd" class="w-full btn-theme-gradient font-bold py-3.5 rounded-xl mt-4 transition-all duration-300 flex justify-center items-center gap-2 text-base">
+                                <button type="submit" id="btn-save-pwd" class="w-full btn-theme-gradient font-bold py-3.5 rounded-xl mt-4 flex justify-center items-center gap-2 text-base">
                                     <i class="fas fa-save"></i> Perbarui Password
                                 </button>
                             </form>
@@ -582,7 +540,7 @@
         </main>
     </div>
 
-    <!-- Notifikasi Toast -->
+    <!-- Toast Notification -->
     <div id="toast-error" class="fixed bottom-6 right-6 bg-slate-900 text-white px-6 py-4 rounded-xl shadow-2xl transition-all duration-400 toast-exit flex items-center gap-4 z-[60] text-sm font-semibold border border-slate-700 max-w-sm">
         <i class="fas fa-info-circle text-xl text-slate-300 shrink-0"></i>
         <span id="toast-msg"></span>
@@ -591,21 +549,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
 
     <script>
-        // ==========================================
-        // KONFIGURASI SUPABASE 
-        // ==========================================
         const SUPABASE_URL = 'https://nqexcwcissrnxtxalkxn.supabase.co'; 
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xZXhjd2Npc3Nybnh0eGFsa3huIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1Mjc3NDYsImV4cCI6MjEwMjEwMzc0Nn0.kYan3Wj3Ll8S6jFQoXbBJMEZn9cSTKNMYM1EuIly3NI'; 
 
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // State Aplikasi
         let currentSession = null;
         let allStudentsList = []; 
         let awesompleteInstance; 
-        
-        let officialSubjects = new Set(); // Mapel referensi (kelas/jurusan/tambahan khusus)
-        let foundSubjects = new Set(); // Mapel yang benar-benar ada di jadwal/presensi siswa
+        let officialSubjects = new Set(); 
+        let foundSubjects = new Set(); 
 
         document.addEventListener("DOMContentLoaded", async () => {
             await fetchAllStudentNames();
@@ -653,12 +606,10 @@
             const icon = document.getElementById(iconId);
             if (input.type === "password") {
                 input.type = "text";
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
             } else {
                 input.type = "password";
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
             }
         }
 
@@ -719,36 +670,21 @@
             const root = document.documentElement;
             const jLower = jenjang ? jenjang.toLowerCase() : "";
             
-            let mainColor = "#475569"; 
+            let mainColor = "#475569";
             let gradStart = "#475569";
             let gradEnd = "#64748b";
             let lightColor = "#f1f5f9";
             
             if (jLower.includes("tbsd")) {
-                mainColor = "#69489d";
-                gradStart = "#69489d";
-                gradEnd = "#fc8370";
-                lightColor = "#f3f0f8"; 
+                mainColor = "#69489d"; gradStart = "#69489d"; gradEnd = "#fc8370"; lightColor = "#f3f0f8";
             } else if (jLower.includes("tk")) {
-                mainColor = "#69489d";
-                gradStart = "#69489d";
-                gradEnd = "#8a66c4"; 
-                lightColor = "#f3f0f8";
-            } else if (jLower === "sd" || jLower.includes("sd ")) {
-                mainColor = "#f4816f";
-                gradStart = "#f4816f";
-                gradEnd = "#f8a092"; 
-                lightColor = "#fef2f0";
+                mainColor = "#69489d"; gradStart = "#69489d"; gradEnd = "#8a66c4"; lightColor = "#f3f0f8";
+            } else if (jLower === "sd") {
+                mainColor = "#f4816f"; gradStart = "#f4816f"; gradEnd = "#f8a092"; lightColor = "#fef2f0";
             } else if (jLower.includes("putra")) {
-                mainColor = "#f4c41d";
-                gradStart = "#f4c41d";
-                gradEnd = "#f7d656"; 
-                lightColor = "#fef9e8";
+                mainColor = "#f4c41d"; gradStart = "#f4c41d"; gradEnd = "#f7d656"; lightColor = "#fef9e8";
             } else if (jLower.includes("putri")) {
-                mainColor = "#00bb96";
-                gradStart = "#00bb96";
-                gradEnd = "#33c9aa"; 
-                lightColor = "#e6f8f4";
+                mainColor = "#00bb96"; gradStart = "#00bb96"; gradEnd = "#33c9aa"; lightColor = "#e6f8f4";
             }
 
             root.style.setProperty('--theme-main', mainColor);
@@ -769,6 +705,7 @@
             try {
                 renderHeaderInfo();
                 await siapkanDaftarMapelResmi();
+                
                 await loadKalender();
 
                 await Promise.all([ 
@@ -779,7 +716,6 @@
                 ]);
                 
                 renderDokumenUjian();
-                
             } catch (err) {
                 console.error("Gagal memuat data dasbor", err);
                 showToast("Terjadi kendala saat memuat rekam data.");
@@ -868,6 +804,7 @@
             const wNama = (currentSession.wali_kelas && currentSession.wali_kelas !== "EMPTY") ? currentSession.wali_kelas.trim() : "Admin Sekolah";
             const jenjangLower = (currentSession.jenjang || "").toLowerCase();
             let panggilan = "WALI KELAS";
+            
             if (jenjangLower.includes("putri") && !wNama.toLowerCase().includes("ustadzah")) panggilan = "WALI KELAS, Ustadzah";
             else if (jenjangLower.includes("putra") && !wNama.toLowerCase().includes("ustadz")) panggilan = "WALI KELAS, Ustadz";
             
@@ -881,20 +818,22 @@
         async function loadKalender() {
             const btn = document.getElementById('btn-kalender');
             btn.classList.add('hidden'); 
+            btn.classList.remove('flex');
+            
             try {
+                const jUser = (currentSession.jenjang || "").trim();
                 const { data, error } = await supabaseClient
                     .from('link_kalender')
                     .select('link_kalender')
-                    .ilike('jenjang', currentSession.jenjang || "") 
-                    .limit(1)
-                    .single();
-                    
-                if(data && data.link_kalender && data.link_kalender !== "EMPTY") {
-                    btn.href = data.link_kalender;
+                    .ilike('jenjang', `%${jUser}%`)
+                    .limit(1);
+
+                if (data && data.length > 0 && data[0].link_kalender && data[0].link_kalender !== "EMPTY") {
+                    btn.href = data[0].link_kalender;
                     btn.classList.remove('hidden');
                     btn.classList.add('flex');
                 }
-            } catch(e) { console.log("Data Kalender belum ada."); }
+            } catch(e) { console.log("Kalender error:", e); }
         }
 
         async function loadJadwalData() {
@@ -1055,9 +994,11 @@
             const rawPresensiMap = {};
             data.forEach(item => {
                 let mapel = (item.mapel && item.mapel !== "EMPTY") ? item.mapel.trim() : "Umum";
-                if(!isMapelMilikSiswa(mapel)) return;
-                
+                // LOGIKA BARU: Tarik SEMUA mapel dari presensi_flat untuk siswa ini.
+                // KECUALI jika nama mapelnya butuh direplace dengan nama mapel khusus dari master data
                 mapel = getSpesifikNamaMapel(mapel);
+                
+                // Tambahkan ke foundSubjects agar tombol dokumen ujiannya juga ikut dirender
                 foundSubjects.add(mapel);
 
                 let pekanRaw = (item.pekan || "").toString().trim();
@@ -1137,9 +1078,9 @@
                 let ths = '';
                 let tds = '';
                 chunk.forEach(item => {
-                    let cleanLabel = item.label;
-                    ths += `<th class="p-2 border-b border-r border-slate-200 font-semibold text-slate-500 text-[11px] whitespace-nowrap min-w-[50px] bg-slate-50 w-1/4">${cleanLabel}</th>`;
-                    let st = item.status;
+                    let cleanLabel = item.label || "";
+                    ths += `<th class="p-2 border-b border-r border-slate-200 font-semibold text-slate-500 text-[11px] whitespace-nowrap bg-slate-50 w-1/4">${cleanLabel}</th>`;
+                    let st = item.status || "";
                     let textClass = "text-slate-600";
                     if (st === 'H') textClass = "text-emerald-600 font-bold bg-emerald-50/50";
                     else if (st === 'A') textClass = "text-red-600 font-bold bg-red-50/50";
@@ -1163,27 +1104,28 @@
         }
 
         async function loadRekapNilai() {
-            // 1. Form Ortu
             const containerOrtu = document.getElementById('rekap-ortu-container');
             containerOrtu.innerHTML = '<p class="text-xs text-slate-400"><i class="fas fa-circle-notch fa-spin"></i> Memuat form...</p>';
             
             try {
-                const { data: dataForm, error: errForm } = await supabaseClient
+                const jUser = (currentSession.jenjang || "").trim();
+                const { data: dataForm } = await supabaseClient
                     .from('nilai_oleh_orang_tua')
                     .select('*')
-                    .eq('Jenjang', currentSession.jenjang || "");
+                    .ilike('Jenjang', `%${jUser}%`);
 
                 if(dataForm && dataForm.length > 0) {
                     containerOrtu.innerHTML = '';
                     let hasLink = false;
                     dataForm.forEach(item => {
-                        if(item.link_google_form && item.link_google_form !== "EMPTY") {
+                        let linkGForm = item.link_google_form || item.link_form || "";
+                        if(linkGForm && linkGForm !== "EMPTY") {
                             hasLink = true;
                             containerOrtu.innerHTML += `
-                                <a href="${item.link_google_form}" target="_blank" class="w-full flex items-center justify-between p-4 border-2 border-amber-200 rounded-xl hover:border-amber-400 bg-amber-50/50 hover:bg-amber-100 transition-colors group">
+                                <a href="${linkGForm}" target="_blank" class="w-full flex items-center justify-between p-4 border-2 border-amber-200 rounded-xl hover:border-amber-400 bg-amber-50/50 hover:bg-amber-100 transition-colors group">
                                     <div class="flex items-center gap-3">
                                         <i class="fab fa-google text-amber-500 group-hover:text-amber-600 text-lg"></i>
-                                        <span class="text-sm font-bold text-amber-900">Isi Form Penilaian - ${item.Kuartal}</span>
+                                        <span class="text-sm font-bold text-amber-900">Isi Form Penilaian - ${item.Kuartal || item.kuartal || "Periode Aktif"}</span>
                                     </div>
                                     <i class="fas fa-external-link-alt text-amber-400 group-hover:text-amber-600"></i>
                                 </a>
@@ -1196,14 +1138,12 @@
                 }
             } catch(e) { containerOrtu.innerHTML = '<p class="text-sm text-red-400">Gagal memuat form.</p>'; }
 
-            // 2. Rekap Nilai Tutor (K1 & K2)
             const containerTutorK1 = document.getElementById('rekap-tutor-k1-container');
             const containerTutorK2 = document.getElementById('rekap-tutor-k2-container');
             containerTutorK1.innerHTML = '<div class="col-span-full"><p class="text-xs text-slate-400"><i class="fas fa-circle-notch fa-spin"></i> Memuat nilai K1...</p></div>';
             containerTutorK2.innerHTML = '<div class="col-span-full"><p class="text-xs text-slate-400"><i class="fas fa-circle-notch fa-spin"></i> Memuat nilai K2...</p></div>';
             
             try {
-                // Sesuai lampiran Supabase (image_bd501b.jpg), kolom yang digunakan adalah mapel, Jenjang, kuartal (atau periode_kuarta), link_asli
                 const { data: dataNilai, error } = await supabaseClient.from('rekap_nilai_flat').select('*');
                 if(error) throw error;
 
@@ -1214,17 +1154,16 @@
                     
                     dataNilai.forEach(item => {
                         let mapel = (item.mapel || "").trim();
-                        let jenjang = (item.Jenjang || "").trim();
-                        // Handle berbagai variasi nama kolom kuartal yang mungkin terpotong
+                        let jenjang = (item.Jenjang || item.jenjang || "").trim();
                         let kuartalStr = (item.kuartal || item.periode_kuartal || item.periode_kuarta || "").toLowerCase().trim();
                         
-                        if (currentSession.jenjang && currentSession.jenjang !== "EMPTY" && jenjang !== currentSession.jenjang) return;
+                        const userJenjang = (currentSession.jenjang || "").toLowerCase();
+                        if (jenjang && userJenjang && !jenjang.toLowerCase().includes(userJenjang) && !userJenjang.includes(jenjang.toLowerCase())) return;
+                        
                         if (!isMapelMilikSiswa(mapel)) return;
                         
                         mapel = getSpesifikNamaMapel(mapel);
-                        
-                        // Gunakan link_asli
-                        let link = item.link_asli && item.link_asli !== "EMPTY" ? item.link_asli : "#";
+                        let link = item.link_asli && item.link_asli !== "EMPTY" ? item.link_asli : (item.link_singkat && item.link_singkat !== "EMPTY" ? item.link_singkat : "#");
                         
                         if(link !== "#") {
                             const btnHTML = `
@@ -1237,8 +1176,8 @@
                                 </a>
                             `;
 
-                            if(kuartalStr.includes('1')) { containerTutorK1.innerHTML += btnHTML; renderedK1++; } 
-                            else if(kuartalStr.includes('2')) { containerTutorK2.innerHTML += btnHTML; renderedK2++; }
+                            if(kuartalStr.includes('2')) { containerTutorK2.innerHTML += btnHTML; renderedK2++; } 
+                            else { containerTutorK1.innerHTML += btnHTML; renderedK1++; }
                         }
                     });
 
@@ -1246,8 +1185,8 @@
                     if(renderedK2 === 0) containerTutorK2.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg border border-slate-100 w-full">Data nilai K2 belum tersedia.</p></div>';
                     
                 } else {
-                     containerTutorK1.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg w-full">Data nilai belum tersedia di database.</p></div>';
-                     containerTutorK2.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg w-full">Data nilai belum tersedia di database.</p></div>';
+                     containerTutorK1.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg w-full">Data nilai belum tersedia.</p></div>';
+                     containerTutorK2.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg w-full">Data nilai belum tersedia.</p></div>';
                 }
             } catch(e) { 
                 console.error("Gagal load rekap", e);
@@ -1302,50 +1241,36 @@
             });
         }
 
+        // FUNGSI EXPORT PDF YANG DIPERBAIKI (Tidak terpotong & tanpa loading teks)
         function exportJadwalToPDF() {
             const element = document.getElementById('print-area-jadwal');
-            const btn = document.getElementById('btn-print');
             const btnKalender = document.getElementById('btn-kalender');
-            const originalText = btn.innerHTML;
+            const btnPrint = document.getElementById('btn-print');
             
             const wasKalenderHidden = btnKalender.classList.contains('hidden');
             
-            // Sembunyikan tombol UI saat mencetak
             if(!wasKalenderHidden) btnKalender.classList.add('hidden');
-            btn.style.visibility = 'hidden';
+            btnPrint.style.visibility = 'hidden';
 
-            // Memunculkan nama siswa di header cetak
-            document.querySelectorAll('.print-student-name').forEach(el => {
-                el.classList.remove('hidden');
-                el.classList.add('block');
-            });
+            document.querySelectorAll('.print-student-name').forEach(el => el.classList.replace('hidden', 'block'));
 
-            // html2pdf Options - Disetel agar tidak terpotong di halaman A4 Landscape
-            const opt = {
-                margin:       [10, 10, 10, 10], // Margin atas, kiri, bawah, kanan
-                filename:     `Jadwal_Pelajaran_${currentSession.nama_lengkap.replace(/\s+/g, '_')}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { 
-                    scale: 2, 
-                    useCORS: true, 
-                    windowWidth: 1200 // Lebar window dirender ulang seperti desktop
-                }, 
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' },
-                // Memastikan elemen tutor tidak terpotong (pindah halaman utuh)
-                pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } 
-            };
+            setTimeout(() => {
+                const opt = {
+                    margin:       [10, 10, 10, 10], 
+                    filename:     `Jadwal_Pelajaran_${currentSession.nama_lengkap.replace(/\s+/g, '_')}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true, windowWidth: 1000 }, // windowWidth di set ke 1000 agar muat ke landscape A4
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'landscape' },
+                    pagebreak:    { mode: 'avoid-all', before: '#tutor-section' } 
+                };
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                // Kembalikan UI seperti semula
-                document.querySelectorAll('.print-student-name').forEach(el => {
-                    el.classList.add('hidden');
-                    el.classList.remove('block');
+                html2pdf().set(opt).from(element).save().then(() => {
+                    document.querySelectorAll('.print-student-name').forEach(el => el.classList.replace('block', 'hidden'));
+                    btnPrint.style.visibility = 'visible';
+                    if(!wasKalenderHidden) btnKalender.classList.remove('hidden');
+                    showToast("File Jadwal berhasil diunduh!");
                 });
-                btn.style.visibility = 'visible';
-                if(!wasKalenderHidden) btnKalender.classList.remove('hidden');
-                
-                showToast("File Jadwal PDF berhasil diunduh!");
-            });
+            }, 100);
         }
 
         function switchTab(tabId) {
@@ -1361,7 +1286,6 @@
                 activeBtn.classList.add('bg-white/10', 'text-white');
                 activeBtn.classList.remove('text-slate-300');
             }
-            
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -1411,7 +1335,6 @@
             toggleLoginLoading(false);
             officialSubjects.clear();
             foundSubjects.clear();
-            
             document.documentElement.style.setProperty('--theme-main', '#475569');
         }
     </script>
