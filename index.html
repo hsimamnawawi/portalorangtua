@@ -269,12 +269,6 @@
                 <!-- TAB 1 & 2: JADWAL KELAS & TUTOR -->
                 <div id="tab-jadwal" class="tab-content block fade-in flex-1">
                     
-                    <div id="kalender-container" class="w-full mb-5 hidden hide-on-print">
-                        <a id="btn-kalender" href="#" target="_blank" class="w-full flex justify-center bg-white hover:bg-slate-50 text-theme-main font-bold py-3.5 px-4 rounded-xl text-sm shadow-sm items-center gap-2 border-2 border-theme-main transition-all">
-                            <i class="fas fa-calendar-day text-lg"></i> Lihat Kalender Akademik
-                        </a>
-                    </div>
-
                     <div id="print-area-jadwal" class="bg-transparent flex flex-col gap-6">
                         <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
                             <div class="px-6 py-5 border-b border-slate-100 bg-slate-50/50 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 hide-on-print">
@@ -282,8 +276,13 @@
                                     <h2 class="font-display font-bold text-xl text-slate-800 flex items-center gap-2"><i class="far fa-calendar-alt text-slate-400"></i> Jadwal Pelajaran Pekanan</h2>
                                 </div>
                                 
-                                <div class="flex items-center w-full lg:w-auto">
-                                    <button onclick="exportJadwalToPDF()" id="btn-print" class="w-full lg:w-auto justify-center btn-theme-gradient font-semibold py-2.5 px-6 rounded-xl text-sm shadow-md flex items-center gap-2">
+                                <div class="flex items-center gap-3 w-full lg:w-auto">
+                                    <!-- Tombol Kalender Akademik -->
+                                    <a id="btn-kalender" href="#" target="_blank" class="hidden flex-1 lg:flex-none justify-center btn-theme-outline font-semibold py-2.5 px-4 rounded-xl text-sm shadow-sm items-center gap-2">
+                                        <i class="fas fa-calendar-day"></i> Kalender Akademik
+                                    </a>
+                                    <!-- Tombol Unduh Jadwal -->
+                                    <button onclick="exportJadwalToPDF()" id="btn-print" class="flex-1 lg:flex-none justify-center btn-theme-gradient font-semibold py-2.5 px-4 rounded-xl text-sm shadow-md flex items-center gap-2">
                                         <i class="fas fa-file-pdf"></i> <span id="text-btn-print">Unduh Jadwal</span>
                                     </button>
                                 </div>
@@ -346,6 +345,7 @@
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-4 w-full sm:w-auto justify-end">
+                                        <span id="wali-no-hp" class="text-sm font-semibold text-slate-600 font-mono"></span>
                                         <a href="#" id="wali-wa" target="_blank" class="btn-theme-gradient px-5 py-2.5 rounded-full font-semibold text-sm flex items-center justify-center gap-2 shadow-sm w-full sm:w-auto hide-on-print">
                                             <i class="fab fa-whatsapp text-lg"></i> Hubungi Wali Kelas
                                         </a>
@@ -355,7 +355,6 @@
 
                             <div class="p-6 bg-slate-50/30">
                                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Tutor Mata Pelajaran</h3>
-                                <!-- EFISIENSI TUTOR: Grid ditata rapi, digabung per tutor -->
                                 <div id="tutor-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-start">
                                 </div>
                             </div>
@@ -537,8 +536,7 @@
         let currentSession = null;
         let allStudentsList = []; 
         let awesompleteInstance; 
-        let officialSubjects = new Set(); 
-        let foundSubjects = new Set(); 
+        let officialSubjects = new Set(); // Hanya mapel dasar (ex: "B.Indo") dari mapel_kelas & mapel_jurusan
 
         document.addEventListener("DOMContentLoaded", async () => {
             await fetchAllStudentNames();
@@ -662,7 +660,7 @@
             } else if (jLower === "sd" || jLower.includes("sd reguler") || jLower.includes("sd mandiri")) {
                 mainColor = "#f4816f"; gradStart = "#f4816f"; gradEnd = "#f8a092"; lightColor = "#fef2f0";
             } else if (jLower.includes("putra")) {
-                // Tema PM Putra (Lebih gelap agar teks putih kontras)
+                // Tema PM Putra
                 mainColor = "#ea580c"; gradStart = "#ea580c"; gradEnd = "#f59e0b"; lightColor = "#fff7ed";
             } else if (jLower.includes("putri")) {
                 mainColor = "#00bb96"; gradStart = "#00bb96"; gradEnd = "#33c9aa"; lightColor = "#e6f8f4";
@@ -681,10 +679,11 @@
             document.getElementById('loading-text').innerText = "Menyiapkan Dasbor Akademik...";
             
             officialSubjects.clear();
-            foundSubjects.clear();
 
             try {
                 renderHeaderInfo();
+                
+                // Murni dari mapel_kelas dan mapel_jurusan
                 await siapkanDaftarMapelResmi();
                 
                 // 1. Tombol Kalender (Pasti Muncul)
@@ -709,16 +708,9 @@
             }
         }
 
+        // HANYA mengambil daftar mapel dari mapel_kelas dan mapel_jurusan
+        // Tidak mengambil spesifik dari master_data_siswa (PAI/B.Arab/Lit_Islam) di sini untuk mencegah dobel.
         async function siapkanDaftarMapelResmi() {
-            const pai = (currentSession.pai || "").trim();
-            if(pai && pai !== "EMPTY" && pai !== "-") officialSubjects.add(pai);
-            
-            const bArab = (currentSession.b_arab || "").trim();
-            if(bArab && bArab !== "EMPTY" && bArab !== "-") officialSubjects.add(bArab);
-            
-            const litIslam = (currentSession.lit_islam || "").trim();
-            if(litIslam && litIslam !== "EMPTY" && litIslam !== "-") officialSubjects.add(litIslam);
-
             const kClean = (currentSession.kelas || "").trim();
             if (kClean) {
                 const { data: dataKelas } = await supabaseClient.from('mapel_kelas').select('nama_mapel').eq('kelas', kClean);
@@ -738,26 +730,36 @@
             }
         }
 
+        // FILTER: Menguji apakah mapel di jadwal/tutor cocok dengan milik siswa
         function isMapelMilikSiswa(namaMapelDicek) {
             if(!namaMapelDicek || namaMapelDicek === "EMPTY" || namaMapelDicek === "-") return false;
             
-            let mDicekLower = namaMapelDicek.toLowerCase().trim();
-            const kelasLower = (currentSession.kelas || "").replace("Kelas ", "").toLowerCase().trim();
-
-            if (kelasLower && mDicekLower.includes(kelasLower)) return true;
+            let mDicekLower = namaMapelDicek.toLowerCase().trim(); // contoh: "b.indo 11.a" atau "fiqih 1-2.b"
+            const kelasClean = (currentSession.kelas || "").replace("Kelas ", "").toLowerCase().trim(); // contoh: "11.a"
 
             let mapelResmiLower = Array.from(officialSubjects).map(m => m.toLowerCase().trim());
+            
             for (let mResmi of mapelResmiLower) {
+                // Kecocokan sama persis
                 if (mDicekLower === mResmi) return true;
                 
-                // EXACT MATCH LOGIC (Mengatasi masalah Fiqih 1-2 vs Fiqih 1-2.A)
+                // Gunakan Regex Word Boundary agar "Fiqih 1-2" cocok dengan "Fiqih 1-2.A" tapi bisa dicek kelasnya
                 let escapedStr = mResmi.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                let regex = new RegExp(`(^|\\s)${escapedStr}($|\\s)`, 'i');
-                if (regex.test(mDicekLower)) return true;
+                let regex = new RegExp(`(^|\\s|/|-)${escapedStr}($|\\s|/|-)`, 'i');
+                
+                if (regex.test(mDicekLower)) {
+                    // Jika mapel di database mengandung info kelas (ex: diakhiri .A, .B atau memuat angka kelas)
+                    if (mDicekLower.match(/\.[a-z]$/i) || mDicekLower.match(/\s\d+\.[a-z]/i)) {
+                        if (kelasClean && mDicekLower.includes(kelasClean)) return true;
+                        return false; // Mengandung kode kelas tapi bukan milik anak ini
+                    }
+                    return true;
+                }
             }
             return false;
         }
 
+        // FUNGSI INI HANYA DIPAKAI UNTUK PRESENSI
         function getSpesifikNamaMapel(namaGeneric) {
             let n = namaGeneric.toLowerCase();
             const pai = (currentSession.pai || "").trim();
@@ -792,7 +794,6 @@
             
             const wNama = (currentSession.wali_kelas && currentSession.wali_kelas !== "EMPTY") ? currentSession.wali_kelas.trim() : "Admin Sekolah";
             
-            // Logika Otomatis Gelar Ustadz/Ustadzah
             const jenjangLower = (currentSession.jenjang || "").toLowerCase();
             let panggilan = "WALI KELAS";
             let gelarDitambahkan = "";
@@ -808,27 +809,33 @@
             document.getElementById('wali-title').innerText = panggilan;
             document.getElementById('wali-nama').innerText = gelarDitambahkan + wNama;
             
-            const waDefault = "6281234567890"; 
-            document.getElementById('wali-wa').href = `https://wa.me/${waDefault}?text=Assalamu'alaikum,%20${encodeURIComponent(gelarDitambahkan + wNama)},%20saya%20wali%20dari%20${encodeURIComponent(currentSession.nama_lengkap)}`;
+            let wPhone = (currentSession.wali_phone || currentSession.no_hp_wali || "").toString().replace(/\D/g, '');
+            if (wPhone.startsWith('0')) wPhone = '62' + wPhone.substring(1);
+            document.getElementById('wali-no-hp').innerText = wPhone ? '+' + wPhone : '';
+            
+            const waTarget = wPhone ? wPhone : "6281234567890";
+            document.getElementById('wali-wa').href = `https://wa.me/${waTarget}?text=Assalamu'alaikum,%20${encodeURIComponent(gelarDitambahkan + wNama)},%20saya%20wali%20dari%20${encodeURIComponent(currentSession.nama_lengkap)}`;
         }
 
-        // FUNGSI KALENDER DIPERBAIKI (Pasti Muncul)
         async function loadKalender() {
             const container = document.getElementById('kalender-container');
             const btn = document.getElementById('btn-kalender');
-            container.classList.add('hidden'); 
+            btn.classList.add('hidden'); 
             
             try {
-                const jUser = (currentSession.jenjang || "").trim();
+                const jUser = (currentSession.jenjang || "").trim().toLowerCase();
                 const { data } = await supabaseClient
                     .from('link_kalender')
                     .select('jenjang, link_kalender');
 
                 if (data && data.length > 0) {
-                    let row = data.find(r => r.jenjang && r.jenjang.trim().toLowerCase() === jUser.toLowerCase());
+                    let row = data.find(r => r.jenjang && r.jenjang.trim().toLowerCase() === jUser);
+                    if (!row) row = data.find(r => r.jenjang && (r.jenjang.trim().toLowerCase().includes(jUser) || jUser.includes(r.jenjang.trim().toLowerCase())));
+
                     if (row && row.link_kalender && row.link_kalender !== "EMPTY") {
                         btn.href = row.link_kalender;
-                        container.classList.remove('hidden');
+                        btn.classList.remove('hidden');
+                        btn.classList.add('flex');
                     }
                 }
             } catch(e) { console.log("Gagal memuat link kalender:", e); }
@@ -838,9 +845,8 @@
             const tbody = document.getElementById('jadwal-body');
             tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center font-bold text-slate-400">Menyusun jadwal...</td></tr>';
             
-            // Penentuan nama tabel Jadwal secara dinamis
             let jenjangUser = (currentSession.jenjang || "").toLowerCase();
-            let namaTabelJadwal = "jadwal_flat"; // Default/Fallback
+            let namaTabelJadwal = "jadwal_flat"; 
 
             if (jenjangUser.includes("sma putri") || jenjangUser.includes("smp putri")) {
                 namaTabelJadwal = "jadwal_pm_putri";
@@ -873,8 +879,7 @@
 
                 if (!isMapelMilikSiswa(mapelAsli)) return;
 
-                mapelAsli = getSpesifikNamaMapel(mapelAsli);
-                foundSubjects.add(mapelAsli);
+                // Teks pada Jadwal biarkan aslinya, tanpa diubah jadi spesifik master_data_siswa.
 
                 const timeKey = jSelesai ? `${jMulai} - ${jSelesai}` : jMulai;
                 if (!jadwalMap.has(timeKey)) {
@@ -923,7 +928,6 @@
             });
         }
 
-        // FUNGSI TUTOR DIPERBAIKI (TUTOR SAYA NAIK & MAPEL DIGABUNG)
         async function loadTutorData() {
             const container = document.getElementById('tutor-container');
             container.innerHTML = '<div class="col-span-full p-8 text-center font-bold text-slate-400">Mencari data tutor...</div>';
@@ -934,11 +938,16 @@
                 return;
             }
 
-            // Object untuk mengelompokkan mapel berdasarkan tutor
             const tutorMap = {};
-            const jenjangLower = (currentSession.jenjang || "").toLowerCase();
+            const jenjangLower = (currentSession.jenjang || "").toLowerCase().trim();
             
             data.forEach(tutor => {
+                // Mencegah tutor dari jenjang lain tercampur
+                let jenjangTutor = (tutor.jenjang || tutor.Jenjang || "").trim().toLowerCase();
+                if (jenjangTutor && jenjangLower && !jenjangTutor.includes(jenjangLower) && !jenjangLower.includes(jenjangTutor)) {
+                    return; 
+                }
+
                 let mapelTutor = (tutor.nama_mapel || "").trim();
                 let namaTutor = (tutor.nama_pengajar || "-").trim();
                 let noHP = (tutor.no_hp || "").replace(/\D/g, '');
@@ -946,9 +955,6 @@
                 if (!isMapelMilikSiswa(mapelTutor)) return;
                 if (namaTutor === "EMPTY" || namaTutor === "-") return;
                 
-                mapelTutor = getSpesifikNamaMapel(mapelTutor);
-
-                // Tambahkan gelar otomatis jika belum ada (Tutor)
                 if (jenjangLower.includes("putri") && !namaTutor.toLowerCase().includes("ustadzah")) {
                     namaTutor = "Ustadzah " + namaTutor;
                 } else if (jenjangLower.includes("putra") && !namaTutor.toLowerCase().includes("ustadz") && !namaTutor.toLowerCase().includes("ustadzah")) {
@@ -957,7 +963,6 @@
 
                 if (noHP.startsWith('0')) noHP = '62' + noHP.substring(1);
 
-                // Pengelompokan mapel per tutor
                 if (!tutorMap[namaTutor]) {
                     tutorMap[namaTutor] = { noHP: noHP, mapels: new Set() };
                 }
@@ -971,14 +976,11 @@
                  return;
             }
 
-            // Render hasil pengelompokan
             for (const [namaTutor, info] of Object.entries(tutorMap)) {
                 let waLink = info.noHP ? `href="https://wa.me/${info.noHP}?text=Assalamu'alaikum,%20${encodeURIComponent(namaTutor)},%20saya%20wali%20dari%20${encodeURIComponent(currentSession.nama_lengkap)}"` : 'href="#" onclick="showToast(\'Nomor WA Tutor belum tersedia.\'); return false;"';
                 
-                // Gabungkan mapel dengan <br> agar rapi
                 let mapelHTML = Array.from(info.mapels).join('<br>');
 
-                // Pisahkan gelar dan nama
                 let displayNama = namaTutor;
                 let displayTitle = "";
                 if (namaTutor.toLowerCase().startsWith("ustadzah ")) {
@@ -1022,9 +1024,8 @@
             const container = document.getElementById('presensi-container');
             container.innerHTML = '<div class="col-span-full p-8 text-center font-bold text-slate-400">Menarik rekam kehadiran...</div>';
             
-            // Penentuan nama tabel Presensi secara dinamis
             let jenjangUser = (currentSession.jenjang || "").toLowerCase();
-            let namaTabelPresensi = "presensi_flat"; // Default/Fallback
+            let namaTabelPresensi = "presensi_flat"; 
 
             if (jenjangUser.includes("sma putri") || jenjangUser.includes("smp putri")) {
                 namaTabelPresensi = "presensi_pm_putri";
@@ -1060,12 +1061,9 @@
             data.forEach(item => {
                 let mapel = (item.mapel && item.mapel !== "EMPTY") ? item.mapel.trim() : "Umum";
                 
-                // MENGGUNAKAN SEMUA MAPEL DI PRESENSI FLAT (Tanpa filter isMapelMilikSiswa)
-                // HANYA REPLACE NAMA JIKA ITU PAI, B.ARAB, LITERASI ISLAM
+                // MENGGUNAKAN NAMA SPESIFIK HANYA UNTUK PRESENSI
                 mapel = getSpesifikNamaMapel(mapel);
                 
-                foundSubjects.add(mapel); // Simpan untuk menu dokumen/rekap
-
                 let pekanRaw = (item.pekan || "").toString().trim();
                 let sesiRaw = (item.sesi || "1").toString().trim();
                 
@@ -1166,14 +1164,13 @@
             return html;
         }
 
-        // FUNGSI REKAP NILAI DIPERBAIKI (TIDAK ADA DATA DIBUANG)
+        // FUNGSI REKAP NILAI DIPERBAIKI: HANYA MUNCULKAN MAPEL RESMI TANPA DUPLIKAT
         async function loadRekapNilai() {
             // 1. Form Ortu
             const containerOrtu = document.getElementById('rekap-ortu-container');
             containerOrtu.innerHTML = '<p class="text-xs text-slate-400"><i class="fas fa-circle-notch fa-spin"></i> Memuat form...</p>';
             
             try {
-                // Tarik form berdasarkan Jenjang (agar tidak semua jenjang muncul)
                 const { data: dataForm } = await supabaseClient.from('nilai_oleh_orang_tua').select('*');
 
                 if(dataForm && dataForm.length > 0) {
@@ -1182,9 +1179,8 @@
                     const jUser = (currentSession.jenjang || "").trim().toLowerCase();
 
                     dataForm.forEach(item => {
-                        // Filter Jenjang Cerdas
-                        const jItem = (item.Jenjang || "").trim().toLowerCase();
-                        if (jItem !== jUser) return; // Harus sesuai jenjangnya
+                        const jItem = (item.Jenjang || item.jenjang || "").trim().toLowerCase();
+                        if (jItem && jUser && !jItem.includes(jUser) && !jUser.includes(jItem)) return;
 
                         let linkGForm = item.link_google_form || item.link_form || "";
                         if(linkGForm && linkGForm !== "EMPTY") {
@@ -1200,7 +1196,7 @@
                             `;
                         }
                     });
-                    if(!hasLink) containerOrtu.innerHTML = '<p class="text-sm font-semibold text-slate-400">Belum ada link formulir tersedia.</p>';
+                    if(!hasLink) containerOrtu.innerHTML = '<p class="text-sm font-semibold text-slate-400">Form belum diterbitkan untuk periode ini.</p>';
                 } else {
                     containerOrtu.innerHTML = '<p class="text-sm font-semibold text-slate-400">Belum ada link formulir tersedia.</p>';
                 }
@@ -1213,7 +1209,6 @@
             containerTutorK2.innerHTML = '<div class="col-span-full"><p class="text-xs text-slate-400"><i class="fas fa-circle-notch fa-spin"></i> Memuat nilai K2...</p></div>';
             
             try {
-                // Tarik SEMUA data nilai dari Supabase
                 const { data: dataNilai, error } = await supabaseClient.from('rekap_nilai_flat').select('*');
                 if(error) throw error;
 
@@ -1221,60 +1216,71 @@
                     containerTutorK1.innerHTML = '';
                     containerTutorK2.innerHTML = '';
                     let renderedK1 = 0, renderedK2 = 0;
-                    const jUser = (currentSession.jenjang || "").trim().toLowerCase();
-                    const kelasLower = (currentSession.kelas || "").replace("Kelas ", "").toLowerCase().trim();
                     
-                    dataNilai.forEach(item => {
-                        let mapelDb = (item.mapel || "").trim(); 
-                        let jenjangDb = (item.Jenjang || item.jenjang || "").trim().toLowerCase();
-                        let kuartalStr = (item.kuartal || item.periode_kuartal || item.periode_kuarta || "").toLowerCase().trim();
+                    const jUser = (currentSession.jenjang || "").trim().toLowerCase();
+                    const kelasClean = (currentSession.kelas || "").replace("Kelas ", "").trim().toLowerCase();
+                    
+                    let renderedK1Mapels = new Set();
+                    let renderedK2Mapels = new Set();
+
+                    // Loop berdasarkan daftar mapel resmi (mapel_kelas & mapel_jurusan)
+                    let mapelArray = Array.from(officialSubjects).filter(m => m && m.length > 2 && m !== "Umum" && m !== "EMPTY" && m !== "-");
+                    mapelArray.sort().forEach(mapelResmi => {
                         
-                        // Syarat 1: Jenjang Harus Sama
-                        if (jenjangDb !== jUser) return;
-                        
-                        // Syarat 2: Mapel ditujukan untuk siswa ini (Logika diperlonggar)
-                        let cocok = false;
-                        
-                        // Cek 1: Gunakan isMapelMilikSiswa (Cek berdasarkan kelas)
-                        if (isMapelMilikSiswa(mapelDb)) {
-                            cocok = true;
-                        } else {
-                            // Cek 2: Fallback ekstrim -> Jika mapel ini ada di Jadwal atau Presensi anak, loloskan!
-                            let combinedMapels = Array.from(new Set([...officialSubjects, ...foundSubjects])).map(m => m.toLowerCase().trim());
-                            let mapelDbLower = mapelDb.toLowerCase();
+                        // Cari data yang relevan di tabel rekap_nilai_flat
+                        let matchingItems = dataNilai.filter(item => {
+                            let jenjangDb = (item.Jenjang || item.jenjang || "").trim().toLowerCase();
+                            let mapelDb = (item.mapel || "").trim().toLowerCase();
                             
-                            for (let mResmi of combinedMapels) {
-                                // Pastikan tidak mengecek kata yg terlalu pendek
-                                if (mResmi.length > 2 && mapelDbLower.includes(mResmi)) {
-                                    cocok = true;
-                                    break;
+                            if (jenjangDb && jUser && !jenjangDb.includes(jUser) && !jUser.includes(jenjangDb)) return false;
+                            
+                            let escapedStr = mapelResmi.toLowerCase().trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                            let regex = new RegExp(`(^|\\s|/|-)${escapedStr}($|\\s|/|-)`, 'i');
+                            
+                            if (!regex.test(mapelDb)) return false;
+                            
+                            // Cegah Fiqih 1-2 vs Fiqih 1-2.A salah kamar
+                            if (mapelDb.match(/\.[a-z]$/i) || mapelDb.match(/\s\d+\.[a-z]/i)) {
+                                if (kelasClean && mapelDb.includes(kelasClean)) return true;
+                                return false; // Berisi tag kelas tapi bukan milik kelas anak ini
+                            }
+                            return true;
+                        });
+
+                        matchingItems.forEach(item => {
+                            let kuartalStr = (item.kuartal || item.periode_kuartal || "").toLowerCase().trim();
+                            let link = item.link_asli && item.link_asli !== "EMPTY" ? item.link_asli : (item.link_singkat && item.link_singkat !== "EMPTY" ? item.link_singkat : "#");
+                            
+                            if(link !== "#") {
+                                const btnHTML = `
+                                    <a href="${link}" target="_blank" class="w-full flex items-center justify-between p-3.5 border border-blue-200 rounded-xl hover:border-blue-400 bg-white hover:bg-blue-50 transition-colors group shadow-sm h-full">
+                                        <div class="flex items-center gap-3 overflow-hidden">
+                                            <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 shrink-0"><i class="fas fa-chart-bar text-sm"></i></div>
+                                            <span class="text-sm font-bold text-slate-700 truncate" title="${mapelResmi}">${mapelResmi}</span>
+                                        </div>
+                                        <i class="fas fa-external-link-alt text-xs text-slate-300 shrink-0"></i>
+                                    </a>
+                                `;
+
+                                if(kuartalStr.includes('2')) { 
+                                    if (!renderedK2Mapels.has(mapelResmi)) {
+                                        containerTutorK2.innerHTML += btnHTML; 
+                                        renderedK2++; 
+                                        renderedK2Mapels.add(mapelResmi);
+                                    }
+                                } else { 
+                                    if (!renderedK1Mapels.has(mapelResmi)) {
+                                        containerTutorK1.innerHTML += btnHTML; 
+                                        renderedK1++; 
+                                        renderedK1Mapels.add(mapelResmi);
+                                    }
                                 }
                             }
-                        }
-
-                        if (!cocok) return; // Buang mapel jika benar-benar tidak terkait dengan anak ini
-                        
-                        mapelDb = getSpesifikNamaMapel(mapelDb);
-                        let link = item.link_asli && item.link_asli !== "EMPTY" ? item.link_asli : (item.link_singkat && item.link_singkat !== "EMPTY" ? item.link_singkat : "#");
-                        
-                        if(link !== "#") {
-                            const btnHTML = `
-                                <a href="${link}" target="_blank" class="w-full flex items-center justify-between p-3.5 border border-blue-200 rounded-xl hover:border-blue-400 bg-white hover:bg-blue-50 transition-colors group shadow-sm h-full">
-                                    <div class="flex items-center gap-3 overflow-hidden">
-                                        <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-500 shrink-0"><i class="fas fa-chart-bar text-sm"></i></div>
-                                        <span class="text-sm font-bold text-slate-700 truncate" title="${mapelDb}">${mapelDb}</span>
-                                    </div>
-                                    <i class="fas fa-external-link-alt text-xs text-slate-300 shrink-0"></i>
-                                </a>
-                            `;
-
-                            if(kuartalStr.includes('2')) { containerTutorK2.innerHTML += btnHTML; renderedK2++; } 
-                            else { containerTutorK1.innerHTML += btnHTML; renderedK1++; }
-                        }
+                        });
                     });
 
-                    if(renderedK1 === 0) containerTutorK1.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg border border-slate-100 w-full">Data nilai belum tersedia.</p></div>';
-                    if(renderedK2 === 0) containerTutorK2.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg border border-slate-100 w-full">Data nilai belum tersedia.</p></div>';
+                    if(renderedK1 === 0) containerTutorK1.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg border border-slate-100 w-full">Data nilai K1 belum tersedia.</p></div>';
+                    if(renderedK2 === 0) containerTutorK2.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg border border-slate-100 w-full">Data nilai K2 belum tersedia.</p></div>';
                     
                 } else {
                      containerTutorK1.innerHTML = '<div class="col-span-full"><p class="text-sm font-semibold text-slate-400 p-3 bg-white rounded-lg w-full">Data nilai belum tersedia.</p></div>';
@@ -1292,8 +1298,8 @@
             const containerK2 = document.getElementById('dokumen-k2-container');
             containerK1.innerHTML = ''; containerK2.innerHTML = '';
             
-            let combinedMapel = new Set([...officialSubjects, ...foundSubjects]);
-            let mapelArray = Array.from(combinedMapel).map(m => getSpesifikNamaMapel(m)).filter(m => m && m.length > 2 && m !== "Umum" && m !== "EMPTY" && m !== "-");
+            // Dokumen ujian murni dilandaskan pada daftar mapel resmi
+            let mapelArray = Array.from(officialSubjects).filter(m => m && m.length > 2 && m !== "Umum" && m !== "EMPTY" && m !== "-");
             mapelArray = [...new Set(mapelArray)];
 
             if(mapelArray.length === 0) {
@@ -1433,7 +1439,6 @@
             document.getElementById('input-nama').value = "";
             toggleLoginLoading(false);
             officialSubjects.clear();
-            foundSubjects.clear();
             document.documentElement.style.setProperty('--theme-main', '#475569');
         }
     </script>
